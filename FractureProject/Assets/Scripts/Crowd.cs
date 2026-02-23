@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Crowd : MonoBehaviour
 {
-    private CrowdNode rootNode;
+    public CrowdNode rootNode { get; private set; }
     
     private void Awake()
     {
