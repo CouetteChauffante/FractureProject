@@ -11,6 +11,7 @@ public class SwitchNodeEvent : MonoBehaviour
 
     public void SwitchEvent(int amount)
     {
+        Debug.Log("ca switch");
         if (node != null)
             node.Switch(amount);
     }

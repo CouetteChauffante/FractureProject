@@ -7,19 +7,19 @@ public class CrowdNode
     
     public event System.Action<CrowdNode, bool> OnStateChanged;
     
-    
-    
     public Vector3 position;
-    public bool isActive 
-    { 
+
+    private bool isActive;
+    public bool IsActive
+    {
         get => isActive;
-        private set {
+        set {
         if (isActive == value) return;
         isActive = value;
         OnStateChanged?.Invoke(this, isActive); 
         }
     }
-    
+
     public CrowdNode(Vector3 position, CrowdNode nextNode, bool isActive)
     {
         this.position = position;
@@ -29,7 +29,19 @@ public class CrowdNode
 
     public void CheckObstacles()
     {
-        
+        if (!IsActive) return;
+
+        if (nextNode != null)
+        {
+            if (Physics.Linecast(this.position, nextNode.position, out RaycastHit hit))
+            {
+                if (Player.instance.canMove && hit.collider.CompareTag("Player"))
+                {
+                    Player.instance.FollowCrowd(nextNode);
+                }
+            }
+            nextNode.CheckObstacles();
+        }
     }
 
     private void Split()
@@ -44,14 +56,18 @@ public class CrowdNode
     
     public void Connect()
     {
-        isActive = true;
-        nextNode.Connect();
+        IsActive = true;
+        
+        if (nextNode != null) 
+            nextNode.Connect();
     }
 
     public void Disconnect()
     {
-        isActive = false;
-        nextNode.Disconnect();
+        IsActive = false;
+        
+        if (nextNode != null) 
+            nextNode.Disconnect();
     }
     
 }
@@ -59,7 +75,7 @@ public class CrowdNode
 public class SwitchCrowdNode : CrowdNode
 {
     public CrowdNode[] nextOriginNodes;
-    public int currentDirectionIndex;
+    public int currentDirectionIndex = -1;
     
     public override CrowdNode nextNode 
     {
@@ -79,6 +95,8 @@ public class SwitchCrowdNode : CrowdNode
     
     public void Switch(int nbOfSwitches)
     {
+        Debug.Log("ca switch dans node");
+        
         nextNode.Disconnect();
         
         int totalStates = nextOriginNodes.Length + 1; //include 0 as null state

@@ -72,33 +72,35 @@ public class RailDebugDisplay : MonoBehaviour
         RegisterNodeRecursive(crowd.rootNode, transform);
     }
     
-    private void RegisterNodeRecursive(CrowdNode node, Transform currentTransform)
+    private void RegisterNodeRecursive(CrowdNode node, Transform origin, int nodeIndex = 0)
     {
-        if (node == null || currentTransform == null) return;
-        
-        nodeMapping[node] = currentTransform.gameObject;
-        
+        if (node == null || nodeIndex >= origin.childCount) return;
+
+        Transform nodeObject = origin.GetChild(nodeIndex);
+
+        nodeMapping[node] = nodeObject.gameObject;
         node.OnStateChanged += HandleStateChange;
+    
+        Debug.Log($"Enregistré : {nodeObject.name}");
 
-        if (node.nextNode != null && currentTransform.childCount > 0)
+        if (node is SwitchCrowdNode switchNode && nodeObject.childCount > 0)
         {
-            RegisterNodeRecursive(node.nextNode, currentTransform.GetChild(0));
-        }
-
-        if (node is SwitchCrowdNode switchNode)
-        {
-            for (int i = 0; i < switchNode.nextOriginNodes.Length; i++)
+            for (int i = 0; i < nodeObject.childCount; i++)
             {
-                if (i + 1 < currentTransform.childCount)
-                {
-                    RegisterNodeRecursive(switchNode.nextOriginNodes[i], currentTransform.GetChild(i + 1));
-                }
+                RegisterNodeRecursive(switchNode.nextOriginNodes[i], nodeObject.GetChild(i));
             }
+        }
+        
+        if (node.nextNode != null)
+        {
+            RegisterNodeRecursive(node.nextNode, origin, nodeIndex + 1);
         }
     }
     
     private void HandleStateChange(CrowdNode node, bool newState)
     {
+        
+        Debug.Log("ca handle");
         if (nodeMapping.TryGetValue(node, out GameObject go))
         {
             go.SetActive(newState);

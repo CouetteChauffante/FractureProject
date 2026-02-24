@@ -12,6 +12,11 @@ public class Crowd : MonoBehaviour
         rootNode = CreateNewBranch(gameObject.transform);
     }
 
+    private void Update()
+    {
+        rootNode.CheckObstacles();
+    }
+
     private CrowdNode CreateNewBranch(Transform newBranchOrigin)
     {
         return new CrowdNode(
