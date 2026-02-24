@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RailDebugDisplay : MonoBehaviour
@@ -58,5 +59,55 @@ public class RailDebugDisplay : MonoBehaviour
             if (nextPoint != null) 
                 Gizmos.DrawLine(currentPoint.position, nextPoint.position);
         }
+    }
+    
+    private Dictionary<CrowdNode, GameObject> nodeMapping = new Dictionary<CrowdNode, GameObject>();
+    
+    private void Start()
+    {
+        Crowd crowd = GetComponent<Crowd>();
+        if (crowd == null)
+            Destroy(this);
+        
+        RegisterNodeRecursive(crowd.rootNode, transform);
+    }
+    
+    private void RegisterNodeRecursive(CrowdNode node, Transform currentTransform)
+    {
+        if (node == null || currentTransform == null) return;
+        
+        nodeMapping[node] = currentTransform.gameObject;
+        
+        node.OnStateChanged += HandleStateChange;
+
+        if (node.nextNode != null && currentTransform.childCount > 0)
+        {
+            RegisterNodeRecursive(node.nextNode, currentTransform.GetChild(0));
+        }
+
+        if (node is SwitchCrowdNode switchNode)
+        {
+            for (int i = 0; i < switchNode.nextOriginNodes.Length; i++)
+            {
+                if (i + 1 < currentTransform.childCount)
+                {
+                    RegisterNodeRecursive(switchNode.nextOriginNodes[i], currentTransform.GetChild(i + 1));
+                }
+            }
+        }
+    }
+    
+    private void HandleStateChange(CrowdNode node, bool newState)
+    {
+        if (nodeMapping.TryGetValue(node, out GameObject go))
+        {
+            go.SetActive(newState);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var node in nodeMapping.Keys)
+            node.OnStateChanged -= HandleStateChange;
     }
 }

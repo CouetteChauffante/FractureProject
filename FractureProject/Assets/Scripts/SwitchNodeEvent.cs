@@ -1,0 +1,17 @@
+using UnityEngine;
+
+public class SwitchNodeEvent : MonoBehaviour
+{
+    private SwitchCrowdNode node;
+
+    public void Bind(SwitchCrowdNode node)
+    {
+        this.node = node;
+    }
+
+    public void SwitchEvent(int amount)
+    {
+        if (node != null)
+            node.Switch(amount);
+    }
+}

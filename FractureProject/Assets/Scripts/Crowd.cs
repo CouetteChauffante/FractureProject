@@ -10,7 +10,6 @@ public class Crowd : MonoBehaviour
     private void Awake()
     {
         rootNode = CreateNewBranch(gameObject.transform);
-        if (debugMode) InitDebugger(rootNode);
     }
 
     private CrowdNode CreateNewBranch(Transform newBranchOrigin)
@@ -35,11 +34,21 @@ public class Crowd : MonoBehaviour
             for (int i = 0; i < nodeObject.childCount; i++)
                 nextOriginNodes[i] = CreateNewBranch(nodeObject.GetChild(i));
             
-            return new SwitchCrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), nextOriginNodes, isNodeActive);
+            SwitchCrowdNode newSwitchNode = new SwitchCrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), nextOriginNodes, isNodeActive);
+            
+            SwitchNodeEvent eventLinked = nodeObject.GetComponent<SwitchNodeEvent>();
+            if (eventLinked != null)
+            {
+                eventLinked.Bind(newSwitchNode);
+            }
+            
+            return newSwitchNode;
         }
             
         return new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), isNodeActive);
     }
+    
+    /*
 
     #region DebugManager
 
@@ -75,4 +84,6 @@ public class Crowd : MonoBehaviour
     }
 
     #endregion
+    
+    */
 }
