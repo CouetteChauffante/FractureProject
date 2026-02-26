@@ -6,6 +6,8 @@ using UnityEngine;
 public class Crowd : MonoBehaviour
 {
     public CrowdNode rootNode { get; private set; }
+
+    public RailDebugDisplay railDebugDisplay;
     
     private void Awake()
     {
@@ -47,10 +49,16 @@ public class Crowd : MonoBehaviour
                 eventLinked.Bind(newSwitchNode);
             }
             
+            railDebugDisplay.RegisterNode(newSwitchNode, nodeObject);
+            
             return newSwitchNode;
         }
-            
-        return new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), isNodeActive);
+        
+        CrowdNode newNode = new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), isNodeActive);
+        
+        railDebugDisplay.RegisterNode(newNode, nodeObject);
+
+        return newNode;
     }
     
     /*

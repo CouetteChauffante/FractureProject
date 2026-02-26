@@ -35,9 +35,9 @@ public class CrowdNode
         {
             if (Physics.Linecast(this.position, nextNode.position, out RaycastHit hit))
             {
-                if (Player.instance.canMove && hit.collider.CompareTag("Player"))
+                if (Player.instance.currentState != Player.States.Transported && hit.collider.CompareTag("Player"))
                 {
-                    Player.instance.FollowCrowd(nextNode);
+                    Player.instance.SetCrowdToFollow(nextNode);
                 }
             }
             nextNode.CheckObstacles();

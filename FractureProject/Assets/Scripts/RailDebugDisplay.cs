@@ -63,38 +63,11 @@ public class RailDebugDisplay : MonoBehaviour
     
     private Dictionary<CrowdNode, GameObject> nodeMapping = new Dictionary<CrowdNode, GameObject>();
     
-    private void Start()
-    {
-        Crowd crowd = GetComponent<Crowd>();
-        if (crowd == null)
-            Destroy(this);
-        
-        RegisterNodeRecursive(crowd.rootNode, transform);
-    }
     
-    private void RegisterNodeRecursive(CrowdNode node, Transform origin, int nodeIndex = 0)
+    public void RegisterNode(CrowdNode node, Transform nodeObject)
     {
-        if (node == null || nodeIndex >= origin.childCount) return;
-
-        Transform nodeObject = origin.GetChild(nodeIndex);
-
         nodeMapping[node] = nodeObject.gameObject;
         node.OnStateChanged += HandleStateChange;
-    
-        Debug.Log($"Enregistré : {nodeObject.name}");
-
-        if (node is SwitchCrowdNode switchNode && nodeObject.childCount > 0)
-        {
-            for (int i = 0; i < nodeObject.childCount; i++)
-            {
-                RegisterNodeRecursive(switchNode.nextOriginNodes[i], nodeObject.GetChild(i));
-            }
-        }
-        
-        if (node.nextNode != null)
-        {
-            RegisterNodeRecursive(node.nextNode, origin, nodeIndex + 1);
-        }
     }
     
     private void HandleStateChange(CrowdNode node, bool newState)
