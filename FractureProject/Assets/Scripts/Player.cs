@@ -34,9 +34,14 @@ public class Player : MonoBehaviour
     private Vector3 direction;
     private Vector3 skewedDirection;
 
-    private float crowdSpeed = 15f;
+    public float crowdSpeed = 15f;
 
     private CrowdNode targetCrowdPoint;
+    
+    
+    public float ejectionDistance = 1.5f;
+
+    public Vector3 ejectionDirection;
 
     void Update()
     {
@@ -45,16 +50,21 @@ public class Player : MonoBehaviour
         
         direction = new Vector3(h, 0, v).normalized;
         
-        currentState = direction.magnitude > 0.1f ? States.Walking : States.Idle;
+        if (currentState != States.Transported)
+        {
+            ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
+        }
 
         switch (currentState)
         {
-            case States.Idle:break;
-            case States.Walking: Move();break;
-            case States.Transported:FollowCrowd();break;
+            case States.Walking: 
+                Move();
+                animatorController.UpdateMoveDirection(direction.x, direction.z);
+                break;
+            case States.Transported: 
+                FollowCrowd(); 
+                break;
         }
-        
-        HandleState();
     }
 
     public void ChangeState(States newState)
@@ -62,6 +72,7 @@ public class Player : MonoBehaviour
         if (currentState == newState) return;
         
         currentState = newState;
+        animatorController.OnStateChanged(newState);
     }
 
     public void Move()
@@ -75,6 +86,7 @@ public class Player : MonoBehaviour
     {
         if (targetCrowdPoint == null)
         {
+            transform.position += ejectionDirection * ejectionDistance;
             ChangeState(States.Idle);
             return;
         }
@@ -85,31 +97,17 @@ public class Player : MonoBehaviour
             crowdSpeed * Time.deltaTime
         );
 
-        if (transform.position == targetCrowdPoint.position)
+        if (Vector3.Distance(transform.position, targetCrowdPoint.position) < 0.1f)
             targetCrowdPoint = targetCrowdPoint.nextNode;
     }
 
     public void SetCrowdToFollow(CrowdNode nextNode)
     {
-        currentState = States.Transported;
+        if (currentState == States.Transported) return;
+            
         targetCrowdPoint = nextNode;
+        ChangeState(States.Transported);
     }
-
-    public void HandleState()
-    {
-        switch (currentState)
-        {
-            case States.Idle:
-                animatorController.SetMovement(false);
-                animatorController.SetTransportedState(false);
-                break;
-            case States.Walking:
-                animatorController.SetMovement(true);
-                animatorController.SetDirection(new Vector2(direction.x, direction.z));
-                break;
-            case States.Transported:
-                animatorController.SetTransportedState(true);
-                break;
-        }
-    }}
+    
+}
 

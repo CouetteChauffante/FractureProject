@@ -11,8 +11,6 @@ public class TriggerEvent : MonoBehaviour
     {
         if (other.CompareTag(targetTag))
         {
-            
-            Debug.Log("ca trig");
             onTriggerEnterAction?.Invoke();
         }
     }

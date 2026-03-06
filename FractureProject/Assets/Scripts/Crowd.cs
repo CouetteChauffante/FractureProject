@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Crowd : MonoBehaviour
 {
     public CrowdNode rootNode { get; private set; }
-
-    public RailDebugDisplay railDebugDisplay;
     
     private void Awake()
     {
-        rootNode = CreateNewBranch(gameObject.transform);
+        rootNode = CreateNewBranch(gameObject.transform, true);
     }
 
     private void Update()
@@ -19,29 +14,38 @@ public class Crowd : MonoBehaviour
         rootNode.CheckObstacles();
     }
 
-    private CrowdNode CreateNewBranch(Transform newBranchOrigin)
+    private CrowdNode CreateNewBranch(Transform newBranchOrigin, bool isActiveBranch)
     {
         return new CrowdNode(
             newBranchOrigin.position,
-            GenerateNodeByChildren(newBranchOrigin),
-            newBranchOrigin.gameObject.activeSelf
+            GenerateNodeByChildren(newBranchOrigin, isActiveBranch),
+            isActiveBranch,
+            
+            newBranchOrigin.gameObject
         );
     }
     
-    private CrowdNode GenerateNodeByChildren(Transform origin, int nodeIndex = 0)
+    private CrowdNode GenerateNodeByChildren(Transform origin, bool isActiveBranch, int nodeIndex = 0)
     {
         if (nodeIndex >= origin.childCount) return null;
         
         Transform nodeObject = origin.GetChild(nodeIndex);
-        bool isNodeActive = nodeObject.gameObject.activeSelf;
 
         if (nodeObject.childCount > 0)
         {
             CrowdNode[] nextOriginNodes = new CrowdNode[nodeObject.childCount];
             for (int i = 0; i < nodeObject.childCount; i++)
-                nextOriginNodes[i] = CreateNewBranch(nodeObject.GetChild(i));
+                nextOriginNodes[i] = CreateNewBranch(nodeObject.GetChild(i), false);
             
-            SwitchCrowdNode newSwitchNode = new SwitchCrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), nextOriginNodes, isNodeActive);
+            SwitchCrowdNode newSwitchNode = 
+                new SwitchCrowdNode(
+                    nodeObject.position, 
+                    GenerateNodeByChildren(origin, isActiveBranch, nodeIndex+1), 
+                    nextOriginNodes,
+                    isActiveBranch,
+                    
+                    nodeObject.gameObject
+                    );
             
             SwitchNodeEvent eventLinked = nodeObject.GetComponent<SwitchNodeEvent>();
             if (eventLinked != null)
@@ -49,54 +53,11 @@ public class Crowd : MonoBehaviour
                 eventLinked.Bind(newSwitchNode);
             }
             
-            railDebugDisplay.RegisterNode(newSwitchNode, nodeObject);
-            
             return newSwitchNode;
         }
-        
-        CrowdNode newNode = new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), isNodeActive);
-        
-        railDebugDisplay.RegisterNode(newNode, nodeObject);
 
-        return newNode;
+        return new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, isActiveBranch, nodeIndex+1), isActiveBranch,
+            nodeObject.gameObject);
     }
     
-    /*
-
-    #region DebugManager
-
-    [SerializeField] private bool debugMode;
-    private List<CrowdNode> nodes = new List<CrowdNode>();
-
-    private void InitDebugger(CrowdNode startingNode)
-    {
-        CrowdNode currentNode = startingNode;
-        while (currentNode != null)
-        {
-            nodes.Add(currentNode);
-
-            if (currentNode is SwitchCrowdNode switchCrowdNode)
-            {
-                foreach (CrowdNode node in switchCrowdNode.nextOriginNodes)
-                {
-                    InitDebugger(node);
-                }
-            }
-            
-            currentNode = currentNode.nextNode;
-        }
-    }
-
-    private void OnDrawGizmos()
-    {
-        foreach (CrowdNode node in nodes)
-        {
-            node.DebugNode();
-            node.DebugSegment();
-        }
-    }
-
-    #endregion
-    
-    */
 }

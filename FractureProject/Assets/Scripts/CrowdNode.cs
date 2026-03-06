@@ -1,11 +1,12 @@
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 
 public class CrowdNode
 {
-    public virtual CrowdNode nextNode { get; private set; }
+    public static event Action<CrowdNode, GameObject> OnNodeCreated;
+    public event Action<CrowdNode, bool> OnActiveStateChanged;
     
-    public event System.Action<CrowdNode, bool> OnStateChanged;
+    public virtual CrowdNode nextNode { get; private set; }
     
     public Vector3 position;
 
@@ -14,17 +15,24 @@ public class CrowdNode
     {
         get => isActive;
         set {
-        if (isActive == value) return;
         isActive = value;
-        OnStateChanged?.Invoke(this, isActive); 
+        if (nextNode != null)
+            nextNode.IsActive = isActive;
+        
+        OnActiveStateChanged?.Invoke(this, isActive); 
         }
     }
 
-    public CrowdNode(Vector3 position, CrowdNode nextNode, bool isActive)
+    private bool isStatic = false;
+
+    public CrowdNode(Vector3 position, CrowdNode nextNode, bool isActive, GameObject sourceGO = null)
     {
+        if (sourceGO != null) OnNodeCreated?.Invoke(this, sourceGO);
+        
         this.position = position;
-        this.isActive = isActive;
         this.nextNode = nextNode;
+        
+        IsActive = isActive;
     }
 
     public void CheckObstacles()
@@ -35,7 +43,7 @@ public class CrowdNode
         {
             if (Physics.Linecast(this.position, nextNode.position, out RaycastHit hit))
             {
-                if (Player.instance.currentState != Player.States.Transported && hit.collider.CompareTag("Player"))
+                if (hit.collider.CompareTag("Player"))
                 {
                     Player.instance.SetCrowdToFollow(nextNode);
                 }
@@ -43,31 +51,17 @@ public class CrowdNode
             nextNode.CheckObstacles();
         }
     }
-
-    private void Split()
-    {
-        
-    }
-
-    private void Merge()
-    {
-        
-    }
     
     public void Connect()
     {
-        IsActive = true;
-        
-        if (nextNode != null) 
-            nextNode.Connect();
+        if (nextNode != null)
+            nextNode.IsActive = IsActive;
     }
 
     public void Disconnect()
     {
-        IsActive = false;
-        
-        if (nextNode != null) 
-            nextNode.Disconnect();
+        if (nextNode != null)
+            nextNode.IsActive = !IsActive;
     }
     
 }
@@ -88,16 +82,15 @@ public class SwitchCrowdNode : CrowdNode
         }
     }
     
-    public SwitchCrowdNode(Vector3 position, CrowdNode nextNode, CrowdNode[] nextOriginNodes, bool isActive) : base(position, nextNode, isActive)
+    public SwitchCrowdNode(Vector3 position, CrowdNode nextNode, CrowdNode[] nextOriginNodes, bool isActive,  GameObject sourceGO = null) 
+        : base(position, nextNode, isActive, sourceGO)
     {
         this.nextOriginNodes = nextOriginNodes;
     }
     
     public void Switch(int nbOfSwitches)
     {
-        Debug.Log("ca switch dans node");
-        
-        nextNode.Disconnect();
+        Disconnect();
         
         int totalStates = nextOriginNodes.Length + 1; //include 0 as null state
         
@@ -109,7 +102,7 @@ public class SwitchCrowdNode : CrowdNode
         // convert new index in range [-1 à size-1]
         currentDirectionIndex = virtualIndex - 1;
         
-        nextNode.Connect();
+        Connect();
     }
 }
 

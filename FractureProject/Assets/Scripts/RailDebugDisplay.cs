@@ -8,9 +8,14 @@ public class RailDebugDisplay : MonoBehaviour
     private Color switchNodeColor = Color.magenta;
     private float nodeSize = 0.2f;
 
+    public List<Crowd> branchesOrigins = new List<Crowd>();
+
     private void OnDrawGizmos()
     {
-        DrawNewBranch(transform);
+        foreach (Crowd branchOrigin in branchesOrigins)
+        {
+            DrawNewBranch(branchOrigin.transform);
+        }
     }
 
     private void DrawNewBranch(Transform originNode)
@@ -32,6 +37,8 @@ public class RailDebugDisplay : MonoBehaviour
         for (int i = 0; i < parent.childCount; i++)
         {
             Transform currentPoint = parent.GetChild(i);
+            
+            if(currentPoint.gameObject.activeSelf == false) break;
 
             if (currentPoint.childCount > 0)
             {
@@ -53,27 +60,32 @@ public class RailDebugDisplay : MonoBehaviour
                 Gizmos.DrawSphere(currentPoint.position, nodeSize);
             }
             
-            Transform nextPoint = (i + 1) < parent.childCount ? parent.GetChild(i + 1) : null;
+            Transform previousPoint = (i - 1) >= 0 ? parent.GetChild(i - 1) : null;
             
             Gizmos.color = nodeColor;
-            if (nextPoint != null) 
-                Gizmos.DrawLine(currentPoint.position, nextPoint.position);
+            if (previousPoint != null) 
+                Gizmos.DrawLine(previousPoint.position, currentPoint.position);
         }
     }
     
     private Dictionary<CrowdNode, GameObject> nodeMapping = new Dictionary<CrowdNode, GameObject>();
     
+    private void OnEnable()
+    {
+        CrowdNode.OnNodeCreated += RegisterNode;
+    }
     
-    public void RegisterNode(CrowdNode node, Transform nodeObject)
+    
+    public void RegisterNode(CrowdNode node, GameObject nodeObject)
     {
         nodeMapping[node] = nodeObject.gameObject;
-        node.OnStateChanged += HandleStateChange;
+        node.OnActiveStateChanged += HandleStateChange;
+        
+        Debug.Log(nodeObject.gameObject.name);
     }
     
     private void HandleStateChange(CrowdNode node, bool newState)
     {
-        
-        Debug.Log("ca handle");
         if (nodeMapping.TryGetValue(node, out GameObject go))
         {
             go.SetActive(newState);
@@ -83,6 +95,6 @@ public class RailDebugDisplay : MonoBehaviour
     private void OnDestroy()
     {
         foreach (var node in nodeMapping.Keys)
-            node.OnStateChanged -= HandleStateChange;
+            node.OnActiveStateChanged -= HandleStateChange;
     }
 }
