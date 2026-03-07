@@ -3,65 +3,45 @@ using UnityEngine;
 
 public class CrowdNode
 {
-    public static event Action<CrowdNode, GameObject> OnNodeCreated;
-    public event Action<CrowdNode, bool> OnActiveStateChanged;
-    
     public virtual CrowdNode nextNode { get; private set; }
     
     public Vector3 position;
 
-    private bool isActive;
-    public bool IsActive
+    public CrowdNode(Vector3 position, CrowdNode nextNode)
     {
-        get => isActive;
-        set {
-        isActive = value;
-        if (nextNode != null)
-            nextNode.IsActive = isActive;
-        
-        OnActiveStateChanged?.Invoke(this, isActive); 
-        }
-    }
-
-    private bool isStatic = false;
-
-    public CrowdNode(Vector3 position, CrowdNode nextNode, bool isActive, GameObject sourceGO = null)
-    {
-        if (sourceGO != null) OnNodeCreated?.Invoke(this, sourceGO);
-        
         this.position = position;
         this.nextNode = nextNode;
-        
-        IsActive = isActive;
+    }
+    
+    public bool IsPathValid()
+    {
+        if (this is ExitCrowdNode) return true;
+
+        if (nextNode == null) return false;
+
+        return nextNode.IsPathValid();
     }
 
     public void CheckObstacles()
     {
-        if (!IsActive) return;
+        if (nextNode == null) return;
 
-        if (nextNode != null)
+        if (Physics.Linecast(this.position, nextNode.position, out RaycastHit hit))
         {
-            if (Physics.Linecast(this.position, nextNode.position, out RaycastHit hit))
+            if (hit.collider.CompareTag("Player"))
             {
-                if (hit.collider.CompareTag("Player"))
+                if (IsPathValid())
                 {
                     Player.instance.SetCrowdToFollow(nextNode);
                 }
+                else
+                {
+                    Player.instance.BlockByCrowd();
+                }
             }
-            nextNode.CheckObstacles();
         }
-    }
-    
-    public void Connect()
-    {
-        if (nextNode != null)
-            nextNode.IsActive = IsActive;
-    }
-
-    public void Disconnect()
-    {
-        if (nextNode != null)
-            nextNode.IsActive = !IsActive;
+        
+        nextNode.CheckObstacles();
     }
     
 }
@@ -82,16 +62,14 @@ public class SwitchCrowdNode : CrowdNode
         }
     }
     
-    public SwitchCrowdNode(Vector3 position, CrowdNode nextNode, CrowdNode[] nextOriginNodes, bool isActive,  GameObject sourceGO = null) 
-        : base(position, nextNode, isActive, sourceGO)
+    public SwitchCrowdNode(Vector3 position, CrowdNode nextNode, CrowdNode[] nextOriginNodes) 
+        : base(position, nextNode)
     {
         this.nextOriginNodes = nextOriginNodes;
     }
     
     public void Switch(int nbOfSwitches)
     {
-        Disconnect();
-        
         int totalStates = nextOriginNodes.Length + 1; //include 0 as null state
         
         // calcul index in range [0 à size]
@@ -101,14 +79,12 @@ public class SwitchCrowdNode : CrowdNode
         
         // convert new index in range [-1 à size-1]
         currentDirectionIndex = virtualIndex - 1;
-        
-        Connect();
     }
 }
 
 public class DynamicCrowdNode : CrowdNode
 {
-    public DynamicCrowdNode(Vector3 position, CrowdNode nextNode, bool isActive) : base(position, nextNode, isActive)
+    public DynamicCrowdNode(Vector3 position, CrowdNode nextNode) : base(position, nextNode)
     {
     }
 
@@ -116,4 +92,20 @@ public class DynamicCrowdNode : CrowdNode
     {
         
     }
+}
+
+public class ExitCrowdNode : CrowdNode
+{
+    public ExitCrowdNode(Vector3 position, CrowdNode nextNode) 
+        : base(position, nextNode) { }
+}
+
+public class StopCrowdNode : CrowdNode
+{
+    public override CrowdNode nextNode => isStopped ? null : base.nextNode;
+
+    public bool isStopped = false;
+    
+    public StopCrowdNode(Vector3 position, CrowdNode nextNode) 
+        : base(position, nextNode) { }
 }

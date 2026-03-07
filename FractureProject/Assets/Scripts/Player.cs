@@ -42,9 +42,14 @@ public class Player : MonoBehaviour
     public float ejectionDistance = 1.5f;
 
     public Vector3 ejectionDirection;
+    
+    
+    private Vector3 lastPositionAllowed;
 
     void Update()
     {
+        lastPositionAllowed = transform.position;
+        
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         
@@ -107,6 +112,16 @@ public class Player : MonoBehaviour
             
         targetCrowdPoint = nextNode;
         ChangeState(States.Transported);
+    }
+
+    public void BlockByCrowd()
+    {
+        transform.position = lastPositionAllowed;
+        
+        if (skewedDirection.magnitude > 0.01f)
+        {
+            transform.position -= skewedDirection * 0.02f;
+        }
     }
     
 }

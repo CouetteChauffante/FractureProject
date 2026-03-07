@@ -6,7 +6,7 @@ public class Crowd : MonoBehaviour
     
     private void Awake()
     {
-        rootNode = CreateNewBranch(gameObject.transform, true);
+        rootNode = CreateNewBranch(gameObject.transform);
     }
 
     private void Update()
@@ -14,18 +14,20 @@ public class Crowd : MonoBehaviour
         rootNode.CheckObstacles();
     }
 
-    private CrowdNode CreateNewBranch(Transform newBranchOrigin, bool isActiveBranch)
+    private CrowdNode CreateNewBranch(Transform newBranchOrigin)
     {
+        if (newBranchOrigin.childCount == 0)
+        {
+            return new ExitCrowdNode(newBranchOrigin.position, null);
+        }
+        
         return new CrowdNode(
             newBranchOrigin.position,
-            GenerateNodeByChildren(newBranchOrigin, isActiveBranch),
-            isActiveBranch,
-            
-            newBranchOrigin.gameObject
+            GenerateNodeByChildren(newBranchOrigin)
         );
     }
     
-    private CrowdNode GenerateNodeByChildren(Transform origin, bool isActiveBranch, int nodeIndex = 0)
+    private CrowdNode GenerateNodeByChildren(Transform origin, int nodeIndex = 0)
     {
         if (nodeIndex >= origin.childCount) return null;
         
@@ -35,16 +37,13 @@ public class Crowd : MonoBehaviour
         {
             CrowdNode[] nextOriginNodes = new CrowdNode[nodeObject.childCount];
             for (int i = 0; i < nodeObject.childCount; i++)
-                nextOriginNodes[i] = CreateNewBranch(nodeObject.GetChild(i), false);
+                nextOriginNodes[i] = CreateNewBranch(nodeObject.GetChild(i));
             
             SwitchCrowdNode newSwitchNode = 
                 new SwitchCrowdNode(
                     nodeObject.position, 
-                    GenerateNodeByChildren(origin, isActiveBranch, nodeIndex+1), 
-                    nextOriginNodes,
-                    isActiveBranch,
-                    
-                    nodeObject.gameObject
+                    GenerateNodeByChildren(origin, nodeIndex+1), 
+                    nextOriginNodes
                     );
             
             SwitchNodeEvent eventLinked = nodeObject.GetComponent<SwitchNodeEvent>();
@@ -55,9 +54,24 @@ public class Crowd : MonoBehaviour
             
             return newSwitchNode;
         }
+        
+        if (nodeIndex == origin.childCount - 1) {
+            return new ExitCrowdNode(nodeObject.position, null);
+        }
+        
+        StopNodeEvent stopEvent = nodeObject.GetComponent<StopNodeEvent>();
+        if (stopEvent != null)
+        {
+            StopCrowdNode stopNode = new StopCrowdNode(
+                nodeObject.position, 
+                GenerateNodeByChildren(origin, nodeIndex + 1)
+            );
+        
+            stopEvent.Bind(stopNode);
+            return stopNode;
+        }
 
-        return new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, isActiveBranch, nodeIndex+1), isActiveBranch,
-            nodeObject.gameObject);
+        return new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1));
     }
     
 }
