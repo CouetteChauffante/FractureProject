@@ -851,7 +851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62dbe8b496393d44c9cf489cfb041a19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IsometricCameraFollow
-  smoothSpeed: 0.125
+  smoothSpeed: 0.008
 --- !u!1 &968079829
 GameObject:
   m_ObjectHideFlags: 0
