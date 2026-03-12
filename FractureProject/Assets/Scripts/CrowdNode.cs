@@ -1,49 +1,57 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+
+
+public enum CrowdState 
+{ 
+    Empty,
+    Flowing,
+    Stagnant
+}
 
 public class CrowdNode
 {
     public virtual CrowdNode nextNode { get; private set; }
-    
     public Vector3 position;
+    
+    public CrowdState state = CrowdState.Empty;
+    public bool isConnectedToSource = false;
 
-    public CrowdNode(Vector3 position, CrowdNode nextNode)
+    public CrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null)
     {
         this.position = position;
         this.nextNode = nextNode;
+        
+        track?.Add(this);
     }
     
     public bool IsPathValid()
     {
         if (this is ExitCrowdNode) return true;
-
         if (nextNode == null) return false;
-
         return nextNode.IsPathValid();
     }
-
+    
     public void CheckObstacles()
     {
-        if (nextNode == null) return;
+        if (nextNode == null || state == CrowdState.Empty) return;
 
         if (Physics.Linecast(this.position, nextNode.position, out RaycastHit hit))
         {
             if (hit.collider.CompareTag("Player"))
             {
-                if (IsPathValid())
+                if (state == CrowdState.Flowing)
                 {
                     Player.instance.SetCrowdToFollow(nextNode);
                 }
-                else
+                else if (state == CrowdState.Stagnant)
                 {
                     Player.instance.BlockByCrowd();
                 }
             }
         }
-        
-        nextNode.CheckObstacles();
     }
-    
 }
 
 public class SwitchCrowdNode : CrowdNode
@@ -62,8 +70,8 @@ public class SwitchCrowdNode : CrowdNode
         }
     }
     
-    public SwitchCrowdNode(Vector3 position, CrowdNode nextNode, CrowdNode[] nextOriginNodes) 
-        : base(position, nextNode)
+    public SwitchCrowdNode(Vector3 position, CrowdNode nextNode, CrowdNode[] nextOriginNodes, HashSet<CrowdNode> track = null) 
+        : base(position, nextNode, track)
     {
         this.nextOriginNodes = nextOriginNodes;
     }
@@ -84,7 +92,8 @@ public class SwitchCrowdNode : CrowdNode
 
 public class DynamicCrowdNode : CrowdNode
 {
-    public DynamicCrowdNode(Vector3 position, CrowdNode nextNode) : base(position, nextNode)
+    public DynamicCrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null) 
+        : base(position, nextNode, track)
     {
     }
 
@@ -96,8 +105,8 @@ public class DynamicCrowdNode : CrowdNode
 
 public class ExitCrowdNode : CrowdNode
 {
-    public ExitCrowdNode(Vector3 position, CrowdNode nextNode) 
-        : base(position, nextNode) { }
+    public ExitCrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null) 
+        : base(position, nextNode, track) { }
 }
 
 public class StopCrowdNode : CrowdNode
@@ -106,6 +115,6 @@ public class StopCrowdNode : CrowdNode
 
     public bool isStopped = false;
     
-    public StopCrowdNode(Vector3 position, CrowdNode nextNode) 
-        : base(position, nextNode) { }
+    public StopCrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null) 
+        : base(position, nextNode, track) { }
 }
