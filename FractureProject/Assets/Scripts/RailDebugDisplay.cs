@@ -8,78 +8,111 @@ public class RailDebugDisplay : MonoBehaviour
     private Color startNodeColor = Color.red;
     private Color switchNodeColor = Color.magenta;
     private float nodeSize = 0.2f;
+    
+    #region RuntimeRender
 
     public List<Crowd> branchesOrigins = new List<Crowd>();
-
-    private void OnDrawGizmos()
+    
+    private void LateUpdate()
     {
-        foreach (Crowd crowd in branchesOrigins)
+        if (Application.isPlaying)
         {
-            if (crowd == null) continue;
-
-            if (Application.isPlaying)
+            foreach (Crowd crowd in branchesOrigins)
             {
-                if (crowd.rootNode != null)
+                if (crowd != null && crowd.allNodes != null)
                 {
-                    DrawRuntimeNode(crowd.rootNode);
+                    DrawRuntimeCrowd(crowd);
                 }
+            }
+        }
+    }
+    
+    private void DrawRuntimeCrowd(Crowd crowd)
+    {
+        for (int i = 0; i < crowd.allNodes.Length; i++)
+        {
+            CrowdNode node = crowd.allNodes[i];
+            if (node == null) continue;
+
+            Color currentColor = Color.gray;
+
+            if (node.state == CrowdState.Flowing)
+            {
+                currentColor = Color.green;
+            }
+            else if (node.state == CrowdState.Stagnant)
+            {
+                currentColor = Color.red;
+            }
+
+            GizmosRuntimeCustom.color = currentColor;
+
+            if (node is ExitCrowdNode)
+            {
+                GizmosRuntimeCustom.color = Color.yellow;
+                GizmosRuntimeCustom.DrawCube(node.position, Vector3.one * nodeSize);
+            }
+            else if (node is SwitchCrowdNode)
+            {
+                GizmosRuntimeCustom.DrawWireCube(node.position, Vector3.one * (nodeSize * 1.5f));
+            }
+            else if (node is StopCrowdNode)
+            {
+                GizmosRuntimeCustom.DrawSphere(node.position, nodeSize * 1.2f);
             }
             else
             {
-                DrawNewBranch(crowd.transform);
+                GizmosRuntimeCustom.DrawSphere(node.position, nodeSize);
+            }
+
+            if (node.nextNode != null)
+            {
+                if (node.state == CrowdState.Empty)
+                {
+                    GizmosRuntimeCustom.color = new Color(0.5f, 0.5f, 0.5f, 0.3f);
+                }
+                else
+                {
+                    GizmosRuntimeCustom.color = currentColor;
+                }
+
+                DrawLineWithArrow(node.position, node.nextNode.position);
             }
         }
     }
-
-    private void DrawRuntimeNode(CrowdNode node)
-    {
-        if (node == null) return;
-
-        Color currentColor = node.IsPathValid() ? Color.green : Color.red; 
-
-        Gizmos.color = currentColor;
-
-        if (node is ExitCrowdNode)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawCube(node.position, Vector3.one * nodeSize);
-        }
-        else if (node is SwitchCrowdNode)
-        {
-            Gizmos.DrawWireCube(node.position, Vector3.one * (nodeSize * 1.5f));
-        }
-        else if (node is StopCrowdNode stopNode)
-        {
-            Gizmos.DrawSphere(node.position, nodeSize * 1.2f);
-        }
-        else
-        {
-            Gizmos.DrawSphere(node.position, nodeSize);
-        }
-
-        if (node.nextNode != null)
-        {
-            Gizmos.color = currentColor;
-            DrawLineWithArrow(node.position, node.nextNode.position);
-            
-            DrawRuntimeNode(node.nextNode);
-        }
-    }
-
+    
     private void DrawLineWithArrow(Vector3 start, Vector3 end)
     {
-        Gizmos.DrawLine(start, end);
+        GizmosRuntimeCustom.DrawLine(start, end);
         Vector3 direction = (start - end).normalized;
         
         if (direction != Vector3.zero) 
         {
             Vector3 right = Vector3.Cross(Vector3.up, direction).normalized;
             float arrowSize = 0.15f;
-            Gizmos.DrawLine(end, end + direction * arrowSize + right * arrowSize);
-            Gizmos.DrawLine(end, end + direction * arrowSize - right * arrowSize);
+            GizmosRuntimeCustom.DrawLine(end, end + direction * arrowSize + right * arrowSize);
+            GizmosRuntimeCustom.DrawLine(end, end + direction * arrowSize - right * arrowSize);
         }
     }
 
+    #endregion
+
+    #region EditorRender
+
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying)
+        {
+            foreach (Crowd crowd in branchesOrigins)
+            {
+                if (crowd != null && crowd.transform != null)
+                {
+                    DrawNewBranch(crowd.transform);
+                }
+            }
+        }
+    }
+    
     private void DrawNewBranch(Transform originNode)
     {
         Gizmos.color = startNodeColor;
@@ -129,4 +162,6 @@ public class RailDebugDisplay : MonoBehaviour
                 Gizmos.DrawLine(previousPoint.position, currentPoint.position);
         }
     }
+
+    #endregion
 }

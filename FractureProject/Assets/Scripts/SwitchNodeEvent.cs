@@ -1,18 +1,23 @@
+using System;
 using UnityEngine;
 
 public class SwitchNodeEvent : MonoBehaviour
 {
     private SwitchCrowdNode node;
 
-    public void Bind(SwitchCrowdNode node)
+    private Action onSwitch;
+
+    public void Bind(SwitchCrowdNode node, Crowd crowd)
     {
         this.node = node;
+        onSwitch += crowd.RefreshCrowdStates;
     }
 
     public void SwitchEvent(int amount)
     {
-        Debug.Log("ca switch");
         if (node != null)
             node.Switch(amount);
+        
+        onSwitch?.Invoke();
     }
 }
