@@ -5,12 +5,18 @@ using UnityEngine;
 public class Crowd : MonoBehaviour
 {
     public CrowdNode rootNode { get; private set; }
+    
+    private HashSet<CrowdNode> allNodesSet = new HashSet<CrowdNode>();
 
-    public HashSet<CrowdNode> allNodes = new HashSet<CrowdNode>();
+    public CrowdNode[] allNodes { get; private set; }
     
     private void Awake()
     {
         rootNode = CreateNewBranch(gameObject.transform);
+        
+        allNodes = new CrowdNode[allNodesSet.Count];
+        allNodesSet.CopyTo(allNodes);
+        allNodesSet.Clear();
     }
 
     private void Start()
@@ -20,9 +26,9 @@ public class Crowd : MonoBehaviour
 
     private void Update()
     {
-        foreach (var node in allNodes)
+        for (int i = 0; i < allNodes.Length; i++)
         {
-            node.CheckObstacles();
+            allNodes[i].CheckObstacles();
         }
     }
 
@@ -30,13 +36,13 @@ public class Crowd : MonoBehaviour
     {
         if (newBranchOrigin.childCount == 0)
         {
-            return new ExitCrowdNode(newBranchOrigin.position, null, allNodes);
+            return new ExitCrowdNode(newBranchOrigin.position, null, allNodesSet);
         }
         
         return new CrowdNode(
             newBranchOrigin.position,
             GenerateNodeByChildren(newBranchOrigin),
-            allNodes
+            allNodesSet
         );
     }
     
@@ -57,7 +63,7 @@ public class Crowd : MonoBehaviour
                     nodeObject.position, 
                     GenerateNodeByChildren(origin, nodeIndex+1), 
                     nextOriginNodes,
-                    allNodes
+                    allNodesSet
                     );
             
             SwitchNodeEvent eventLinked = nodeObject.GetComponent<SwitchNodeEvent>();
@@ -70,7 +76,7 @@ public class Crowd : MonoBehaviour
         }
         
         if (nodeIndex == origin.childCount - 1) {
-            return new ExitCrowdNode(nodeObject.position, null, allNodes);
+            return new ExitCrowdNode(nodeObject.position, null, allNodesSet);
         }
         
         StopNodeEvent stopEvent = nodeObject.GetComponent<StopNodeEvent>();
@@ -79,14 +85,14 @@ public class Crowd : MonoBehaviour
             StopCrowdNode stopNode = new StopCrowdNode(
                 nodeObject.position, 
                 GenerateNodeByChildren(origin, nodeIndex + 1),
-                allNodes
+                allNodesSet
             );
         
             stopEvent.Bind(stopNode, this);
             return stopNode;
         }
 
-        return new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), allNodes);
+        return new CrowdNode(nodeObject.position, GenerateNodeByChildren(origin, nodeIndex+1), allNodesSet);
     }
     
     

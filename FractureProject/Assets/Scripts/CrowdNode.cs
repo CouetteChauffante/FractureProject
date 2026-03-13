@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-
 
 public enum CrowdState 
 { 
@@ -90,19 +88,6 @@ public class SwitchCrowdNode : CrowdNode
     }
 }
 
-public class DynamicCrowdNode : CrowdNode
-{
-    public DynamicCrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null) 
-        : base(position, nextNode, track)
-    {
-    }
-
-    public void UpdatePosition()
-    {
-        
-    }
-}
-
 public class ExitCrowdNode : CrowdNode
 {
     public ExitCrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null) 
@@ -117,4 +102,18 @@ public class StopCrowdNode : CrowdNode
     
     public StopCrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null) 
         : base(position, nextNode, track) { }
+}
+
+//TODOO
+public class DynamicCrowdNode : CrowdNode
+{
+    public DynamicCrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null) 
+        : base(position, nextNode, track)
+    {
+    }
+
+    public void UpdatePosition()
+    {
+        
+    }
 }
