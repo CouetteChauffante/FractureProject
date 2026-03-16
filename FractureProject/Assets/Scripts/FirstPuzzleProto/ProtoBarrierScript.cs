@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ProtoBarrierScript : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class ProtoBarrierScript : MonoBehaviour
 
     private void Update()
     {
-        if (isPlayerClose && Input.GetKeyDown(KeyCode.Q))
+        if (isPlayerClose && (Input.GetKeyDown(KeyCode.Q)||Input.GetButtonDown("Fire1")))
         {
             if(Mathf.Abs(xAxisMax-targetPos.x)>0.1f) targetPos += new Vector3(xAxisDistance/3, 0, 0);
         }
