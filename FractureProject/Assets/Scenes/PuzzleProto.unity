@@ -299,8 +299,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 6.1023264, z: 1}
-  m_Center: {x: 0, y: 2.5511637, z: 0}
+  m_Size: {x: 1, y: 2.8879068, z: 1}
+  m_Center: {x: 0, y: 0.9439539, z: 0}
 --- !u!23 &122101667
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3621,7 +3621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62dbe8b496393d44c9cf489cfb041a19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IsometricCameraFollow
-  smoothSpeed: 0.008
+  smoothSpeed: 0.009
 --- !u!1 &968079829
 GameObject:
   m_ObjectHideFlags: 0
@@ -7677,8 +7677,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 6.1023264, z: 1}
-  m_Center: {x: 0, y: 2.5511637, z: 0}
+  m_Size: {x: 1, y: 2.446253, z: 1}
+  m_Center: {x: 0, y: 0.7231276, z: 0}
 --- !u!23 &1606056510
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9292,9 +9292,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   currentState: 0
   moveSpeed: 5
-  crowdSpeed: 15
+  crowdSpeed: 50
   ejectionDistance: 5
-  ejectionDirection: {x: 0, y: 0, z: 1}
+  ejectionDirection: {x: 0, y: 0, z: 0}
 --- !u!136 &1893997797
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -9341,9 +9341,9 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1893997799
 MonoBehaviour:

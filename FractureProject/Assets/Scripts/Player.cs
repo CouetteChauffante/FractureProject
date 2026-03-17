@@ -41,10 +41,12 @@ public class Player : MonoBehaviour
     
     public float ejectionDistance = 1.5f;
 
-    public Vector3 ejectionDirection;
+    public Vector3 ejectionDirection = new Vector3(0, 0, 0);
     
     
     private Vector3 lastPositionAllowed;
+    
+    private float lastExitTime;
 
     void Update()
     {
@@ -91,11 +93,17 @@ public class Player : MonoBehaviour
     {
         if (targetCrowdPoint == null)
         {
-            transform.position += ejectionDirection * ejectionDistance;
             ChangeState(States.Idle);
             return;
         }
-            
+
+        Vector3 movementVector = targetCrowdPoint.position - transform.position;
+    
+        if (movementVector.magnitude > 0.01f)
+        {
+            ejectionDirection = movementVector.normalized;
+        }
+
         transform.position = Vector3.MoveTowards(
             transform.position, 
             targetCrowdPoint.position, 
@@ -103,12 +111,33 @@ public class Player : MonoBehaviour
         );
 
         if (Vector3.Distance(transform.position, targetCrowdPoint.position) < 0.1f)
-            targetCrowdPoint = targetCrowdPoint.nextNode;
+        {
+            if (targetCrowdPoint is ExitCrowdNode)
+            {
+                ApplyEjection();
+            }
+            else
+            {
+                targetCrowdPoint = targetCrowdPoint.nextNode;
+            }
+        }
+    }
+
+    private void ApplyEjection()
+    {
+        transform.position += ejectionDirection * ejectionDistance;
+    
+        targetCrowdPoint = null;
+        ChangeState(States.Idle);
+    
+        ejectionDirection = Vector3.zero;
+        
+        lastExitTime = Time.time;
     }
 
     public void SetCrowdToFollow(CrowdNode nextNode)
     {
-        if (currentState == States.Transported) return;
+        if (currentState == States.Transported || Time.time < lastExitTime + 0.2f) return;
             
         targetCrowdPoint = nextNode;
         ChangeState(States.Transported);
