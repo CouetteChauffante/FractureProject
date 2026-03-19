@@ -11,7 +11,8 @@ public class Player : MonoBehaviour
     {
         Idle,
         Walking,
-        Transported
+        Transported,
+        Ejected
     }
     
     public States currentState = States.Idle;
@@ -27,26 +28,26 @@ public class Player : MonoBehaviour
     private void Start()
     {
         animatorController = GetComponent<AnimatorController>();
+        rb = GetComponent<Rigidbody>();
     }
 
-    public float moveSpeed = 5f;
+    public float moveSpeed;
     
     private Vector3 direction;
     private Vector3 skewedDirection;
 
-    public float crowdSpeed = 15f;
+    public float crowdSpeed;
 
     private CrowdNode targetCrowdPoint;
     
-    
-    public float ejectionDistance = 1.5f;
-
-    public Vector3 ejectionDirection = new Vector3(0, 0, 0);
-    
-    
     private Vector3 lastPositionAllowed;
     
-    private float lastExitTime;
+    public float ejectionDistance; 
+    public float ejectionSpeed;
+    private Vector3 ejectionDirection;
+    private Vector3 ejectionTargetPosition;
+
+    private Rigidbody rb;
 
     void Update()
     {
@@ -57,7 +58,7 @@ public class Player : MonoBehaviour
         
         direction = new Vector3(h, 0, v).normalized;
         
-        if (currentState != States.Transported)
+        if (currentState != States.Transported && currentState != States.Ejected)
         {
             ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
         }
@@ -70,6 +71,9 @@ public class Player : MonoBehaviour
                 break;
             case States.Transported: 
                 FollowCrowd(); 
+                break;
+            case States.Ejected:
+                ApplyEjection();
                 break;
         }
     }
@@ -86,24 +90,11 @@ public class Player : MonoBehaviour
     {
         skewedDirection = Quaternion.Euler(0, 45, 0) * direction;
 
-        transform.Translate(skewedDirection * moveSpeed * Time.deltaTime, Space.World);
+        rb.MovePosition(transform.position + skewedDirection * moveSpeed * Time.deltaTime);
     }
 
     public void FollowCrowd()
     {
-        if (targetCrowdPoint == null)
-        {
-            ChangeState(States.Idle);
-            return;
-        }
-
-        Vector3 movementVector = targetCrowdPoint.position - transform.position;
-    
-        if (movementVector.magnitude > 0.01f)
-        {
-            ejectionDirection = movementVector.normalized;
-        }
-
         transform.position = Vector3.MoveTowards(
             transform.position, 
             targetCrowdPoint.position, 
@@ -112,12 +103,16 @@ public class Player : MonoBehaviour
 
         if (Vector3.Distance(transform.position, targetCrowdPoint.position) < 0.1f)
         {
-            if (targetCrowdPoint is ExitCrowdNode)
+            if (targetCrowdPoint.nextNode is ExitCrowdNode)
             {
-                ApplyEjection();
+                ejectionTargetPosition = transform.position + (ejectionDirection * ejectionDistance);
+                ChangeState(States.Ejected);
             }
             else
             {
+                if (targetCrowdPoint.nextNode.nextNode is ExitCrowdNode)
+                    ejectionDirection = (targetCrowdPoint.nextNode.position - targetCrowdPoint.position).normalized;
+                
                 targetCrowdPoint = targetCrowdPoint.nextNode;
             }
         }
@@ -125,21 +120,26 @@ public class Player : MonoBehaviour
 
     private void ApplyEjection()
     {
-        transform.position += ejectionDirection * ejectionDistance;
-    
-        targetCrowdPoint = null;
-        ChangeState(States.Idle);
-    
-        ejectionDirection = Vector3.zero;
+        transform.position = Vector3.MoveTowards(
+            transform.position, 
+            ejectionTargetPosition, 
+            ejectionSpeed * Time.deltaTime
+        );
         
-        lastExitTime = Time.time;
+        if (Vector3.Distance(transform.position, ejectionTargetPosition) < 0.01f)
+        {
+            ChangeState(States.Idle);
+        }
     }
 
-    public void SetCrowdToFollow(CrowdNode nextNode)
+    public void SetCrowdToFollow(CrowdNode startNode)
     {
-        if (currentState == States.Transported || Time.time < lastExitTime + 0.2f) return;
-            
-        targetCrowdPoint = nextNode;
+        if (currentState == States.Transported || currentState == States.Ejected) return;
+        
+        if (startNode.nextNode.nextNode is ExitCrowdNode)
+            ejectionDirection = (startNode.nextNode.position - startNode.position).normalized;
+
+        targetCrowdPoint = startNode.nextNode;
         ChangeState(States.Transported);
     }
 
