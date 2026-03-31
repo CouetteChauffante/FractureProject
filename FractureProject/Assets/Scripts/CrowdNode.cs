@@ -34,6 +34,7 @@ public class CrowdNode
     public void CheckObstacles()
     {
         if (nextNode == null || state == CrowdState.Empty) return;
+        if (nextNode is ExitCrowdNode) return;
 
         if (Physics.Linecast(this.position, nextNode.position, out RaycastHit hit))
         {
@@ -41,7 +42,7 @@ public class CrowdNode
             {
                 if (state == CrowdState.Flowing)
                 {
-                    Player.instance.SetCrowdToFollow(nextNode);
+                    Player.instance.SetCrowdToFollow(this);
                 }
                 else if (state == CrowdState.Stagnant)
                 {
