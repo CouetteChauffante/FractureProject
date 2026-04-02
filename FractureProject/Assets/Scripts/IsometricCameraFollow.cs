@@ -3,26 +3,50 @@ using UnityEngine;
 
 public class IsometricCameraFollow : MonoBehaviour
 {
-    public float smoothSpeed = 0.125f;
+    public static IsometricCameraFollow instance { get; private set; }
     
-    private Transform target;
+    public float smoothTime = 0.1f;
+    
+    private Transform currentTarget;
     private Vector3 offset;
+    private Vector3 velocity = Vector3.zero;
+    
+    private void Awake()
+    {
+        if (instance != null)
+            throw new Exception("Multiple camera in scene");
+        
+        instance = this;
+    }
 
     private void Start()
     {
         if (Player.instance == null)
             throw new Exception("No Player in scene");
         
-        target = Player.instance.transform;
-        offset = transform.position - target.position;
+        currentTarget = Player.instance.transform;
+        
+        offset = transform.position - currentTarget.position;
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        Vector3 desiredPosition = target.position + offset;
+        if (currentTarget == null) return;
 
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        Vector3 desiredPosition = currentTarget.position + offset;
 
-        transform.position = smoothedPosition;
+        transform.position = Vector3.SmoothDamp(
+            transform.position, 
+            desiredPosition, 
+            ref velocity, 
+            smoothTime
+        );
+    }
+
+    public void ChangeTarget(Transform newTarget)
+    {
+        if (newTarget == null) return;
+        
+        currentTarget = newTarget;
     }
 }
