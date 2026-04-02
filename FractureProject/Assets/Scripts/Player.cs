@@ -51,8 +51,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        lastPositionAllowed = transform.position;
-        
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         
@@ -62,12 +60,24 @@ public class Player : MonoBehaviour
         {
             ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
         }
-
+        
+        if (currentState == States.Walking)
+        {
+            animatorController.UpdateMoveDirection(direction.x, direction.z);
+        }
+    }
+    
+    void FixedUpdate()
+    {
+        lastPositionAllowed = rb.position;
+        
         switch (currentState)
         {
+            case States.Idle:
+                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0); 
+                break;
             case States.Walking: 
                 Move();
-                animatorController.UpdateMoveDirection(direction.x, direction.z);
                 break;
             case States.Transported: 
                 FollowCrowd(); 
@@ -82,6 +92,16 @@ public class Player : MonoBehaviour
     {
         if (currentState == newState) return;
         
+        if (newState == States.Transported || newState == States.Ejected)
+        {
+            rb.isKinematic = true; 
+        }
+        else
+        {
+            rb.isKinematic = false; 
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        }
+
         currentState = newState;
         animatorController.OnStateChanged(newState);
     }
@@ -90,22 +110,27 @@ public class Player : MonoBehaviour
     {
         skewedDirection = Quaternion.Euler(0, 45, 0) * direction;
 
-        rb.MovePosition(transform.position + skewedDirection * moveSpeed * Time.deltaTime);
+        rb.linearVelocity = new Vector3(skewedDirection.x * moveSpeed, rb.linearVelocity.y, skewedDirection.z * moveSpeed);
     }
 
     public void FollowCrowd()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position, 
-            targetCrowdPoint.position, 
-            crowdSpeed * Time.deltaTime
+        Vector3 flatTargetPos = new Vector3(targetCrowdPoint.position.x, rb.position.y, targetCrowdPoint.position.z);
+        
+        Vector3 newPos = Vector3.MoveTowards(
+            rb.position, 
+            flatTargetPos, 
+            crowdSpeed * Time.fixedDeltaTime
         );
+        rb.MovePosition(newPos);
 
-        if (Vector3.Distance(transform.position, targetCrowdPoint.position) < 0.1f)
+        if (Vector3.Distance(rb.position, flatTargetPos) < 0.1f)
         {
             if (targetCrowdPoint.nextNode is ExitCrowdNode)
             {
-                ejectionTargetPosition = transform.position + (ejectionDirection * ejectionDistance);
+                Vector3 flatEjectionDir = new Vector3(ejectionDirection.x, 0, ejectionDirection.z).normalized;
+                ejectionTargetPosition = rb.position + (flatEjectionDir * ejectionDistance);
+                
                 ChangeState(States.Ejected);
             }
             else
@@ -120,13 +145,16 @@ public class Player : MonoBehaviour
 
     private void ApplyEjection()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position, 
-            ejectionTargetPosition, 
-            ejectionSpeed * Time.deltaTime
+        Vector3 flatEjectionTarget = new Vector3(ejectionTargetPosition.x, rb.position.y, ejectionTargetPosition.z);
+
+        Vector3 newPos = Vector3.MoveTowards(
+            rb.position, 
+            flatEjectionTarget, 
+            ejectionSpeed * Time.fixedDeltaTime
         );
+        rb.MovePosition(newPos);
         
-        if (Vector3.Distance(transform.position, ejectionTargetPosition) < 0.01f)
+        if (Vector3.Distance(rb.position, flatEjectionTarget) < 0.01f)
         {
             ChangeState(States.Idle);
         }
@@ -145,12 +173,14 @@ public class Player : MonoBehaviour
 
     public void BlockByCrowd()
     {
-        transform.position = lastPositionAllowed;
+        Vector3 targetPos = lastPositionAllowed;
         
         if (skewedDirection.magnitude > 0.01f)
         {
-            transform.position -= skewedDirection * 0.02f;
+            targetPos -= skewedDirection * 0.02f;
         }
+        
+        rb.MovePosition(targetPos);
     }
     
 }
