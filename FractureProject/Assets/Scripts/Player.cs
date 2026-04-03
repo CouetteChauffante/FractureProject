@@ -183,5 +183,13 @@ public class Player : MonoBehaviour
         rb.MovePosition(targetPos);
     }
     
+    public Vector3 GetPushDirection()
+    {
+        if (skewedDirection.magnitude > 0.1f)
+        {
+            return skewedDirection.normalized;
+        }
+        return Vector3.zero;
+    }
 }
 
