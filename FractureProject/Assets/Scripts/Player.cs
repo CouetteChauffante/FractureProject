@@ -12,7 +12,8 @@ public class Player : MonoBehaviour
         Idle,
         Walking,
         Transported,
-        Ejected
+        Ejected,
+        Pushing //Nico
     }
     
     public States currentState = States.Idle;
@@ -56,7 +57,7 @@ public class Player : MonoBehaviour
         
         direction = new Vector3(h, 0, v).normalized;
         
-        if (currentState != States.Transported && currentState != States.Ejected)
+        if (currentState != States.Transported && currentState != States.Ejected /*nico*/ && currentState != States.Pushing)
         {
             ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
         }
