@@ -79,6 +79,17 @@ public class Crowd : MonoBehaviour
             return new ExitCrowdNode(nodeObject.position, null, allNodesSet);
         }
         
+        IntermediateExitFlag intermediateExit = nodeObject.GetComponent<IntermediateExitFlag>();
+        if (intermediateExit != null)
+        {
+            return new IntermediateExitCrowdNode(
+                nodeObject.position, 
+                GenerateNodeByChildren(origin, nodeIndex + 1),
+                intermediateExit.GetNormalizedDirection(),
+                allNodesSet
+            );
+        }
+        
         StopNodeEvent stopEvent = nodeObject.GetComponent<StopNodeEvent>();
         if (stopEvent != null)
         {
