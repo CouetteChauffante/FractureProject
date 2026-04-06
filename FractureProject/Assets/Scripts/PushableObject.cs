@@ -21,9 +21,15 @@ public class PushableObject : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         boxCol = GetComponent<BoxCollider>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        baseSprite = spriteRenderer.sprite;
         
         rb.isKinematic = true; 
     }
+
+    private SpriteRenderer spriteRenderer;
+    public Sprite spriteWhenPush;
+    private Sprite baseSprite;
 
     private void OnCollisionStay(Collision collision)
     {
@@ -51,6 +57,8 @@ public class PushableObject : MonoBehaviour
                     }
 
                     pushTimer += Time.deltaTime;
+
+                    spriteRenderer.sprite = spriteWhenPush;
 
                     if (pushTimer >= pushDelay)
                     {
@@ -82,6 +90,7 @@ public class PushableObject : MonoBehaviour
     {
         pushTimer = 0f;
         lastPushDirection = Vector3.zero;
+        spriteRenderer.sprite = baseSprite;
     }
 
     private void TryPush(Vector3 direction)
