@@ -127,6 +127,15 @@ public class Player : MonoBehaviour
 
         if (Vector3.Distance(rb.position, flatTargetPos) < 0.1f)
         {
+            if (targetCrowdPoint is IntermediateExitCrowdNode intermediateNode)
+            {
+                Vector3 flatEjectionDir = new Vector3(intermediateNode.ejectionDirection.x, 0, intermediateNode.ejectionDirection.y).normalized;
+                ejectionTargetPosition = rb.position + (flatEjectionDir * ejectionDistance);
+                
+                ChangeState(States.Ejected);
+                return;
+            }
+            
             if (targetCrowdPoint.nextNode is ExitCrowdNode)
             {
                 Vector3 flatEjectionDir = new Vector3(ejectionDirection.x, 0, ejectionDirection.z).normalized;
