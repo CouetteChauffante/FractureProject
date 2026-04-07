@@ -263,6 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d5726240952155479f41243d9c49072, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  spriteRenderer: {fileID: 666575424217466356}
   currentState: 0
   moveSpeed: 10
   crowdSpeed: 30

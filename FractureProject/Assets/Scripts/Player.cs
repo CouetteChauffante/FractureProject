@@ -7,6 +7,10 @@ public class Player : MonoBehaviour
     
     private AnimatorController animatorController;
     
+    //Stoian
+    public SpriteRenderer spriteRenderer;
+    //Stoian
+    
     public enum States
     {
         Idle,
@@ -66,6 +70,25 @@ public class Player : MonoBehaviour
         {
             animatorController.UpdateMoveDirection(direction.x, direction.z);
         }
+        
+        //Stoian
+        if (h > 0 && v <= 0) //Down Right
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (h < 0 && v <= 0) //Down Left
+        {
+            spriteRenderer.flipX = false;
+        } 
+        else if (h < 0 && v > 0) //Up Left
+        {
+            spriteRenderer.flipX = true;
+        } 
+        else if (h > 0 && v > 0) //Up Right
+        {
+            spriteRenderer.flipX = false;
+        }
+        //Stoian
     }
     
     void FixedUpdate()
