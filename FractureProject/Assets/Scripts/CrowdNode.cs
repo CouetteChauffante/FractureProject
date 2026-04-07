@@ -105,16 +105,13 @@ public class StopCrowdNode : CrowdNode
         : base(position, nextNode, track) { }
 }
 
-//TODOO
-public class DynamicCrowdNode : CrowdNode
+public class IntermediateExitCrowdNode : CrowdNode
 {
-    public DynamicCrowdNode(Vector3 position, CrowdNode nextNode, HashSet<CrowdNode> track = null) 
+    public Vector2 ejectionDirection;
+
+    public IntermediateExitCrowdNode(Vector3 position, CrowdNode nextNode, Vector2 ejectionDirection, HashSet<CrowdNode> track = null) 
         : base(position, nextNode, track)
     {
-    }
-
-    public void UpdatePosition()
-    {
-        
+        this.ejectionDirection = ejectionDirection;
     }
 }
