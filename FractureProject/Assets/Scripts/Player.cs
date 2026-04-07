@@ -7,12 +7,17 @@ public class Player : MonoBehaviour
     
     private AnimatorController animatorController;
     
+    //Stoian
+    public SpriteRenderer spriteRenderer;
+    //Stoian
+    
     public enum States
     {
         Idle,
         Walking,
         Transported,
-        Ejected
+        Ejected,
+        Pushing //Nico
     }
     
     public States currentState = States.Idle;
@@ -51,23 +56,52 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        lastPositionAllowed = transform.position;
-        
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         
         direction = new Vector3(h, 0, v).normalized;
         
-        if (currentState != States.Transported && currentState != States.Ejected)
+        if (currentState != States.Transported && currentState != States.Ejected /*nico*/ && currentState != States.Pushing)
         {
             ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
         }
-
+        
+        if (currentState == States.Walking || /*Stoian*/ currentState == States.Pushing)
+        {
+            animatorController.UpdateMoveDirection(direction.x, direction.z);
+        }
+        
+        //Stoian
+        if (h > 0 && v <= 0) //Down Right
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (h < 0 && v <= 0) //Down Left
+        {
+            spriteRenderer.flipX = false;
+        } 
+        else if (h < 0 && v > 0) //Up Left
+        {
+            spriteRenderer.flipX = true;
+        } 
+        else if (h > 0 && v > 0) //Up Right
+        {
+            spriteRenderer.flipX = false;
+        }
+        //Stoian
+    }
+    
+    void FixedUpdate()
+    {
+        lastPositionAllowed = rb.position;
+        
         switch (currentState)
         {
+            case States.Idle:
+                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0); 
+                break;
             case States.Walking: 
                 Move();
-                animatorController.UpdateMoveDirection(direction.x, direction.z);
                 break;
             case States.Transported: 
                 FollowCrowd(); 
@@ -75,6 +109,11 @@ public class Player : MonoBehaviour
             case States.Ejected:
                 ApplyEjection();
                 break;
+            //Stoian
+            case States.Pushing:
+                Move();
+                break;
+            //Stoian
         }
     }
 
@@ -82,6 +121,16 @@ public class Player : MonoBehaviour
     {
         if (currentState == newState) return;
         
+        if (newState == States.Transported || newState == States.Ejected)
+        {
+            rb.isKinematic = true; 
+        }
+        else
+        {
+            rb.isKinematic = false; 
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        }
+
         currentState = newState;
         animatorController.OnStateChanged(newState);
     }
@@ -90,22 +139,36 @@ public class Player : MonoBehaviour
     {
         skewedDirection = Quaternion.Euler(0, 45, 0) * direction;
 
-        rb.MovePosition(transform.position + skewedDirection * moveSpeed * Time.deltaTime);
+        rb.linearVelocity = new Vector3(skewedDirection.x * moveSpeed, rb.linearVelocity.y, skewedDirection.z * moveSpeed);
     }
 
     public void FollowCrowd()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position, 
-            targetCrowdPoint.position, 
-            crowdSpeed * Time.deltaTime
+        Vector3 flatTargetPos = new Vector3(targetCrowdPoint.position.x, rb.position.y, targetCrowdPoint.position.z);
+        
+        Vector3 newPos = Vector3.MoveTowards(
+            rb.position, 
+            flatTargetPos, 
+            crowdSpeed * Time.fixedDeltaTime
         );
+        rb.MovePosition(newPos);
 
-        if (Vector3.Distance(transform.position, targetCrowdPoint.position) < 0.1f)
+        if (Vector3.Distance(rb.position, flatTargetPos) < 0.1f)
         {
+            if (targetCrowdPoint is IntermediateExitCrowdNode intermediateNode)
+            {
+                Vector3 flatEjectionDir = new Vector3(intermediateNode.ejectionDirection.x, 0, intermediateNode.ejectionDirection.y).normalized;
+                ejectionTargetPosition = rb.position + (flatEjectionDir * ejectionDistance);
+                
+                ChangeState(States.Ejected);
+                return;
+            }
+            
             if (targetCrowdPoint.nextNode is ExitCrowdNode)
             {
-                ejectionTargetPosition = transform.position + (ejectionDirection * ejectionDistance);
+                Vector3 flatEjectionDir = new Vector3(ejectionDirection.x, 0, ejectionDirection.z).normalized;
+                ejectionTargetPosition = rb.position + (flatEjectionDir * ejectionDistance);
+                
                 ChangeState(States.Ejected);
             }
             else
@@ -120,13 +183,16 @@ public class Player : MonoBehaviour
 
     private void ApplyEjection()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position, 
-            ejectionTargetPosition, 
-            ejectionSpeed * Time.deltaTime
+        Vector3 flatEjectionTarget = new Vector3(ejectionTargetPosition.x, rb.position.y, ejectionTargetPosition.z);
+
+        Vector3 newPos = Vector3.MoveTowards(
+            rb.position, 
+            flatEjectionTarget, 
+            ejectionSpeed * Time.fixedDeltaTime
         );
+        rb.MovePosition(newPos);
         
-        if (Vector3.Distance(transform.position, ejectionTargetPosition) < 0.01f)
+        if (Vector3.Distance(rb.position, flatEjectionTarget) < 0.01f)
         {
             ChangeState(States.Idle);
         }
@@ -145,13 +211,46 @@ public class Player : MonoBehaviour
 
     public void BlockByCrowd()
     {
-        transform.position = lastPositionAllowed;
+        Vector3 targetPos = lastPositionAllowed;
         
         if (skewedDirection.magnitude > 0.01f)
         {
-            transform.position -= skewedDirection * 0.02f;
+            targetPos -= skewedDirection * 0.02f;
         }
+        
+        rb.MovePosition(targetPos);
     }
     
+    public Vector3 GetPushDirection()
+    {
+        if (skewedDirection.magnitude > 0.1f)
+        {
+            return skewedDirection.normalized;
+        }
+        return Vector3.zero;
+    }
+
+    //Stoian
+    public void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("ProtoBarrier"))
+        {
+            Push();
+        }
+    }
+
+    public void Push()
+    {
+        ChangeState(States.Pushing);
+    }
+
+    public void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("ProtoBarrier"))
+        {
+            ChangeState(States.Walking);
+        }
+    }
+    //Stoian
 }
 
