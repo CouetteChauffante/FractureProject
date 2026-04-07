@@ -101,6 +101,8 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 0
+  spriteRenderer: {fileID: 7682398642958613625}
+  spriteWhenPush: {fileID: 0}
 --- !u!1 &7127406416743827479
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,5 +208,10 @@ PrefabInstance:
 --- !u!4 &6788976171050590729 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3028293237164612591, guid: 4bc67090de85af34a9ffd5d65d4148a0, type: 3}
+  m_PrefabInstance: {fileID: 8372721105972361702}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &7682398642958613625 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2210350015859672479, guid: 4bc67090de85af34a9ffd5d65d4148a0, type: 3}
   m_PrefabInstance: {fileID: 8372721105972361702}
   m_PrefabAsset: {fileID: 0}

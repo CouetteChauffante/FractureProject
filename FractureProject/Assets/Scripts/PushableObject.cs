@@ -21,17 +21,18 @@ public class PushableObject : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         boxCol = GetComponent<BoxCollider>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         baseSprite = spriteRenderer.sprite;
+        if (spriteWhenPush == null)
+            spriteWhenPush = baseSprite;
         
         rb.isKinematic = true; 
     }
 
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     public Sprite spriteWhenPush;
     private Sprite baseSprite;
 
-    private void OnCollisionStay(Collision collision)
+private void OnCollisionStay(Collision collision)
     {
         if (isMoving) return;
 
@@ -44,10 +45,15 @@ public class PushableObject : MonoBehaviour
                 Vector3 contactNormal = collision.GetContact(0).normal;
                 contactNormal.y = 0; 
 
-                float pushAlignment = Vector3.Dot(playerDir.normalized, -contactNormal.normalized);
+                float pushAlignment = Vector3.Dot(playerDir.normalized, contactNormal.normalized);
 
-                if (pushAlignment > 0.95f)
+                float absoluteAlignment = Mathf.Abs(pushAlignment);
+
+                if (absoluteAlignment > 0.95f) 
                 {
+                    Vector3 dirToCrate = (transform.position - collision.transform.position).normalized;
+                    if (Vector3.Dot(playerDir, dirToCrate) < 0) return;
+
                     Vector3 currentPushDir = GetSnappyDirection(playerDir);
 
                     if (currentPushDir != lastPushDirection)
@@ -57,7 +63,6 @@ public class PushableObject : MonoBehaviour
                     }
 
                     pushTimer += Time.deltaTime;
-
                     spriteRenderer.sprite = spriteWhenPush;
 
                     if (pushTimer >= pushDelay)
