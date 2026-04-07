@@ -21,11 +21,18 @@ public class PushableObject : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         boxCol = GetComponent<BoxCollider>();
+        baseSprite = spriteRenderer.sprite;
+        if (spriteWhenPush == null)
+            spriteWhenPush = baseSprite;
         
         rb.isKinematic = true; 
     }
 
-    private void OnCollisionStay(Collision collision)
+    public SpriteRenderer spriteRenderer;
+    public Sprite spriteWhenPush;
+    private Sprite baseSprite;
+
+private void OnCollisionStay(Collision collision)
     {
         if (isMoving) return;
 
@@ -35,13 +42,18 @@ public class PushableObject : MonoBehaviour
             
             if (playerDir != Vector3.zero)
             {
-                Vector3 dirToCrate = (transform.position - collision.transform.position).normalized;
-                dirToCrate.y = 0;
+                Vector3 contactNormal = collision.GetContact(0).normal;
+                contactNormal.y = 0; 
 
-                float pushAlignment = Vector3.Dot(playerDir, dirToCrate);
+                float pushAlignment = Vector3.Dot(playerDir.normalized, contactNormal.normalized);
 
-                if (pushAlignment > 0.7f) 
+                float absoluteAlignment = Mathf.Abs(pushAlignment);
+
+                if (absoluteAlignment > 0.95f) 
                 {
+                    Vector3 dirToCrate = (transform.position - collision.transform.position).normalized;
+                    if (Vector3.Dot(playerDir, dirToCrate) < 0) return;
+
                     Vector3 currentPushDir = GetSnappyDirection(playerDir);
 
                     if (currentPushDir != lastPushDirection)
@@ -51,6 +63,7 @@ public class PushableObject : MonoBehaviour
                     }
 
                     pushTimer += Time.deltaTime;
+                    spriteRenderer.sprite = spriteWhenPush;
 
                     if (pushTimer >= pushDelay)
                     {
@@ -82,6 +95,7 @@ public class PushableObject : MonoBehaviour
     {
         pushTimer = 0f;
         lastPushDirection = Vector3.zero;
+        spriteRenderer.sprite = baseSprite;
     }
 
     private void TryPush(Vector3 direction)

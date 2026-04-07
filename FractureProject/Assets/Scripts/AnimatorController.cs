@@ -6,6 +6,7 @@ public class AnimatorController : MonoBehaviour
 
     private static readonly int IsMovingHash = Animator.StringToHash("isMoving");
     private static readonly int IsTransportedHash = Animator.StringToHash("isTransported");
+    private static readonly int IsPushingHash = Animator.StringToHash("isPushing");//Nico
     private static readonly int MoveXHash = Animator.StringToHash("MoveX");
     private static readonly int MoveYHash = Animator.StringToHash("MoveY");
 
@@ -13,6 +14,7 @@ public class AnimatorController : MonoBehaviour
     {
         animator.SetBool(IsMovingHash, newState == Player.States.Walking);
         animator.SetBool(IsTransportedHash, newState == Player.States.Transported);
+        animator.SetBool(IsPushingHash,newState == Player.States.Pushing);//Nico
     }
 
     public void UpdateMoveDirection(float dirX, float dirY)

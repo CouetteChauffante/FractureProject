@@ -39,6 +39,17 @@ public class Crowd : MonoBehaviour
             return new ExitCrowdNode(newBranchOrigin.position, null, allNodesSet);
         }
         
+        IntermediateExitFlag intermediateExit = newBranchOrigin.GetComponent<IntermediateExitFlag>();
+        if (intermediateExit != null)
+        {
+            return new IntermediateExitCrowdNode(
+                newBranchOrigin.position, 
+                GenerateNodeByChildren(newBranchOrigin),
+                intermediateExit.GetNormalizedDirection(),
+                allNodesSet
+            );
+        }
+        
         return new CrowdNode(
             newBranchOrigin.position,
             GenerateNodeByChildren(newBranchOrigin),
@@ -77,6 +88,17 @@ public class Crowd : MonoBehaviour
         
         if (nodeIndex == origin.childCount - 1) {
             return new ExitCrowdNode(nodeObject.position, null, allNodesSet);
+        }
+        
+        IntermediateExitFlag intermediateExit = nodeObject.GetComponent<IntermediateExitFlag>();
+        if (intermediateExit != null)
+        {
+            return new IntermediateExitCrowdNode(
+                nodeObject.position, 
+                GenerateNodeByChildren(origin, nodeIndex + 1),
+                intermediateExit.GetNormalizedDirection(),
+                allNodesSet
+            );
         }
         
         StopNodeEvent stopEvent = nodeObject.GetComponent<StopNodeEvent>();

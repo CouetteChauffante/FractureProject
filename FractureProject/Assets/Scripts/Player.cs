@@ -7,12 +7,17 @@ public class Player : MonoBehaviour
     
     private AnimatorController animatorController;
     
+    //Stoian
+    public SpriteRenderer spriteRenderer;
+    //Stoian
+    
     public enum States
     {
         Idle,
         Walking,
         Transported,
-        Ejected
+        Ejected,
+        Pushing //Nico
     }
     
     public States currentState = States.Idle;
@@ -56,15 +61,34 @@ public class Player : MonoBehaviour
         
         direction = new Vector3(h, 0, v).normalized;
         
-        if (currentState != States.Transported && currentState != States.Ejected)
+        if (currentState != States.Transported && currentState != States.Ejected /*nico*/ && currentState != States.Pushing)
         {
             ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
         }
         
-        if (currentState == States.Walking)
+        if (currentState == States.Walking || /*Stoian*/ currentState == States.Pushing)
         {
             animatorController.UpdateMoveDirection(direction.x, direction.z);
         }
+        
+        //Stoian
+        if (h > 0 && v <= 0) //Down Right
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (h < 0 && v <= 0) //Down Left
+        {
+            spriteRenderer.flipX = false;
+        } 
+        else if (h < 0 && v > 0) //Up Left
+        {
+            spriteRenderer.flipX = true;
+        } 
+        else if (h > 0 && v > 0) //Up Right
+        {
+            spriteRenderer.flipX = false;
+        }
+        //Stoian
     }
     
     void FixedUpdate()
@@ -85,6 +109,11 @@ public class Player : MonoBehaviour
             case States.Ejected:
                 ApplyEjection();
                 break;
+            //Stoian
+            case States.Pushing:
+                Move();
+                break;
+            //Stoian
         }
     }
 
@@ -126,6 +155,15 @@ public class Player : MonoBehaviour
 
         if (Vector3.Distance(rb.position, flatTargetPos) < 0.1f)
         {
+            if (targetCrowdPoint is IntermediateExitCrowdNode intermediateNode)
+            {
+                Vector3 flatEjectionDir = new Vector3(intermediateNode.ejectionDirection.x, 0, intermediateNode.ejectionDirection.y).normalized;
+                ejectionTargetPosition = rb.position + (flatEjectionDir * ejectionDistance);
+                
+                ChangeState(States.Ejected);
+                return;
+            }
+            
             if (targetCrowdPoint.nextNode is ExitCrowdNode)
             {
                 Vector3 flatEjectionDir = new Vector3(ejectionDirection.x, 0, ejectionDirection.z).normalized;
@@ -191,5 +229,28 @@ public class Player : MonoBehaviour
         }
         return Vector3.zero;
     }
+
+    //Stoian
+    public void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("ProtoBarrier"))
+        {
+            Push();
+        }
+    }
+
+    public void Push()
+    {
+        ChangeState(States.Pushing);
+    }
+
+    public void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("ProtoBarrier"))
+        {
+            ChangeState(States.Walking);
+        }
+    }
+    //Stoian
 }
 
