@@ -2360,11 +2360,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d7df40e4441af7448ce2f8ca36609d0, type: 3}
---- !u!4 &247645379 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-  m_PrefabInstance: {fileID: 1042814179}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &270291740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9024,75 +9019,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ca216969900408498319e94687d176f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SwitchNodeEvent
---- !u!1001 &1042814179
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1394896293}
-    m_Modifications:
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.6877
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.6877
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.6877
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -7.753998
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 10.59
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.34243393
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2327727636677960044, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8117012917007019146, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
-      propertyPath: m_Name
-      value: Tree
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 23316b1405007254abb9b2ce565fe59f, type: 3}
 --- !u!1001 &1044792717
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11999,7 +11925,6 @@ Transform:
   - {fileID: 1915465995}
   - {fileID: 6573099}
   - {fileID: 1384143881}
-  - {fileID: 247645379}
   - {fileID: 295177629}
   - {fileID: 1602568710}
   - {fileID: 1939627909}
@@ -15673,7 +15598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ffb95acb4aa5ed4792003c33a822416, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IntermediateExitFlag
-  ejectionDirection: {x: 0, y: 180}
+  ejectionDirection: {x: 90, y: -90}
 --- !u!1 &1875100851
 GameObject:
   m_ObjectHideFlags: 0
