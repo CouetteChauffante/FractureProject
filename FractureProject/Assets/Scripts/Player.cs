@@ -62,7 +62,7 @@ public class Player : MonoBehaviour
             ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
         }
         
-        if (currentState == States.Walking)
+        if (currentState == States.Walking || /*Stoian*/ currentState == States.Pushing)
         {
             animatorController.UpdateMoveDirection(direction.x, direction.z);
         }
@@ -86,6 +86,11 @@ public class Player : MonoBehaviour
             case States.Ejected:
                 ApplyEjection();
                 break;
+            //Stoian
+            case States.Pushing:
+                Move();
+                break;
+            //Stoian
         }
     }
 
@@ -201,5 +206,28 @@ public class Player : MonoBehaviour
         }
         return Vector3.zero;
     }
+
+    //Stoian
+    public void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("ProtoBarrier"))
+        {
+            Push();
+        }
+    }
+
+    public void Push()
+    {
+        ChangeState(States.Pushing);
+    }
+
+    public void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("ProtoBarrier"))
+        {
+            ChangeState(States.Walking);
+        }
+    }
+    //Stoian
 }
 
