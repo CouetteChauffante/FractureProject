@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8987038259168087752}
   - component: {fileID: 4379849697033406688}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SM_station essence
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,6 +37,7 @@ Transform:
   - {fileID: 532106423559817156}
   - {fileID: 3860611201746999379}
   - {fileID: 6153304408002423465}
+  - {fileID: 7170266955937261804}
   - {fileID: 6168183434250120416}
   - {fileID: 5416125834789428826}
   - {fileID: 2987345934803605914}
@@ -111,9 +112,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4059399557700627408, guid: 06829201b4a91d546a663df663568e36, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     - target: {fileID: 4783726706338457402, guid: 06829201b4a91d546a663df663568e36, type: 3}
       propertyPath: m_Name
       value: B_Angle_Right_windows_TopAndsideBeam (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4783726706338457402, guid: 06829201b4a91d546a663df663568e36, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -136,6 +145,10 @@ PrefabInstance:
     - target: {fileID: 4017199882537642725, guid: 6c899aab238252b4d933daebe0c12015, type: 3}
       propertyPath: m_Name
       value: B_Angle_Right_roof_Flat (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017199882537642725, guid: 6c899aab238252b4d933daebe0c12015, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5601330367811447694, guid: 6c899aab238252b4d933daebe0c12015, type: 3}
       propertyPath: m_LocalPosition.x
@@ -177,6 +190,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8811085905634855215, guid: 6c899aab238252b4d933daebe0c12015, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -235,9 +252,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4059399557700627408, guid: 06829201b4a91d546a663df663568e36, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     - target: {fileID: 4783726706338457402, guid: 06829201b4a91d546a663df663568e36, type: 3}
       propertyPath: m_Name
       value: B_Angle_Right_windows_TopAndsideBeam (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4783726706338457402, guid: 06829201b4a91d546a663df663568e36, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -297,9 +322,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6900622933127705862, guid: 3dce2920f2ad4644f9677e04d4f76eed, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     - target: {fileID: 7034845275972670316, guid: 3dce2920f2ad4644f9677e04d4f76eed, type: 3}
       propertyPath: m_Name
       value: B_Angle_Left_Display_SideAndTopBeam.001 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7034845275972670316, guid: 3dce2920f2ad4644f9677e04d4f76eed, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -359,9 +392,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3685314029717228113, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     - target: {fileID: 4512979942113631478, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
       propertyPath: m_Name
       value: B_Angle_Right_Wall_Plain.001 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512979942113631478, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -421,9 +462,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3685314029717228113, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     - target: {fileID: 4512979942113631478, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
       propertyPath: m_Name
       value: B_Angle_Right_Wall_Plain.001 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512979942113631478, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -483,9 +532,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6900622933127705862, guid: 3dce2920f2ad4644f9677e04d4f76eed, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     - target: {fileID: 7034845275972670316, guid: 3dce2920f2ad4644f9677e04d4f76eed, type: 3}
       propertyPath: m_Name
       value: B_Angle_Left_Display_SideAndTopBeam.001 (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7034845275972670316, guid: 3dce2920f2ad4644f9677e04d4f76eed, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -509,6 +566,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: B_Angle_Left_Roof_Flat (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5409929021041693114, guid: 97b7b4e656edbd54cb4644a01ee371b0, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7172475678761551614, guid: 97b7b4e656edbd54cb4644a01ee371b0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     - target: {fileID: 8529906522590723673, guid: 97b7b4e656edbd54cb4644a01ee371b0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.010776043
@@ -559,6 +624,88 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8529906522590723673, guid: 97b7b4e656edbd54cb4644a01ee371b0, type: 3}
   m_PrefabInstance: {fileID: 7519787687027245639}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7711175343461657118
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8987038259168087752}
+    m_Modifications:
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalScale.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.0033755037
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.448074
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685314029717228113, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
+    - target: {fileID: 4512979942113631478, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_Name
+      value: B_Angle_Right_Wall_Plain.001 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512979942113631478, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+--- !u!4 &7170266955937261804 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 613191931338736370, guid: f58ee821b90ad7e4a938954b140ae020, type: 3}
+  m_PrefabInstance: {fileID: 7711175343461657118}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8658250710556898269
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -570,6 +717,10 @@ PrefabInstance:
     - target: {fileID: 4017199882537642725, guid: 6c899aab238252b4d933daebe0c12015, type: 3}
       propertyPath: m_Name
       value: B_Angle_Right_roof_Flat (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017199882537642725, guid: 6c899aab238252b4d933daebe0c12015, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5601330367811447694, guid: 6c899aab238252b4d933daebe0c12015, type: 3}
       propertyPath: m_LocalPosition.x
@@ -611,6 +762,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8811085905634855215, guid: 6c899aab238252b4d933daebe0c12015, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -633,6 +788,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: B_Angle_Left_Roof_Flat (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5409929021041693114, guid: 97b7b4e656edbd54cb4644a01ee371b0, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7172475678761551614, guid: 97b7b4e656edbd54cb4644a01ee371b0, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 77a63d26716f53a49916dace0c62e61d, type: 2}
     - target: {fileID: 8529906522590723673, guid: 97b7b4e656edbd54cb4644a01ee371b0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.445784
