@@ -12,22 +12,21 @@ public class S_Vignette_Track_Player : MonoBehaviour
 
     void Update()
     {
-        var dir = Camera.transform.position - transform.position;
-        var ray = new Ray(transform.position, dir.normalized);
+        var dir = transform.position - Camera.transform.position;
+        var ray = new Ray(Camera.transform.position, dir.normalized);
 
-        if (Physics.Raycast(ray, 3000, Mask))
+        if (Physics.Raycast(ray, out RaycastHit hit, 3000f, Mask))
         {
             wallMaterial.SetFloat(SizeID, 1);
-            Debug.DrawLine(transform.position, Vector3.forward, Color.green);
+            Debug.DrawLine(Camera.transform.position, hit.point, Color.green);
         }
-
         else
         {
             wallMaterial.SetFloat(SizeID, 0);
-            Debug.DrawLine(transform.position, Vector3.forward, Color.red);
+            Debug.DrawLine(Camera.transform.position, transform.position, Color.red);
         }
 
-    var view = Camera.WorldToViewportPoint(transform.position);
+        var view = Camera.WorldToViewportPoint(transform.position);
         wallMaterial.SetVector(PosID, view);
     }
 }
