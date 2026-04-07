@@ -41,12 +41,12 @@ public class PushableObject : MonoBehaviour
             
             if (playerDir != Vector3.zero)
             {
-                Vector3 dirToCrate = (transform.position - collision.transform.position).normalized;
-                dirToCrate.y = 0;
+                Vector3 contactNormal = collision.GetContact(0).normal;
+                contactNormal.y = 0; 
 
-                float pushAlignment = Vector3.Dot(playerDir, dirToCrate);
+                float pushAlignment = Vector3.Dot(playerDir.normalized, -contactNormal.normalized);
 
-                if (pushAlignment > 0.7f) 
+                if (pushAlignment > 0.95f)
                 {
                     Vector3 currentPushDir = GetSnappyDirection(playerDir);
 
