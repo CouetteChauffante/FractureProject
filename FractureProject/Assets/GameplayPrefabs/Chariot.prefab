@@ -100,7 +100,7 @@ MonoBehaviour:
   pushDelay: 0.5
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   spriteRenderer: {fileID: 7682398642958613625}
   spriteWhenPush: {fileID: 0}
 --- !u!1 &7127406416743827479
