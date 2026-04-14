@@ -39,6 +39,8 @@ public class NewPushableObject : MonoBehaviour
             if (Input.GetKey(KeyCode.Q) || Input.GetButton("Fire1"))
             {
                 Player.instance.locked = true;
+                Player.instance.ChangeState(Player.States.Pushing);
+                
                 Vector3 dir = new Vector3(0f, 0f, 0f);
                 if(onX)dir +=(new Vector3(Input.GetAxis("Horizontal"), 0f, 0f));
                 if(onZ)dir +=(new Vector3( 0f, 0f,Input.GetAxis("Vertical")));
@@ -52,6 +54,7 @@ public class NewPushableObject : MonoBehaviour
             else
             {
                 Player.instance.locked = false;
+                Player.instance.ChangeState(Player.States.Walking);
             }
         }
         else

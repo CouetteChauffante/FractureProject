@@ -74,6 +74,8 @@ public class Player : MonoBehaviour
         }
         
         //Stoian
+        if (currentState == States.Pushing) return;
+        
         if (h > 0 && v <= 0) //Down Right
         {
             spriteRenderer.flipX = true;
