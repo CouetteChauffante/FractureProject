@@ -38,16 +38,12 @@ public class NewPushableHandle : MonoBehaviour
 
     private IEnumerator Rumble()
     {
-        Debug.Log("Rumble");
-        
         Gamepad gamepad = Gamepad.current;
 
         if (gamepad != null)
         {
             gamepad.SetMotorSpeeds(lowFrequency, highFrequency);
-            Debug.Log(lowFrequency+ ", " + highFrequency);
             yield return new WaitForSeconds(rumbleDuration);
-            Debug.Log("Ca fait " + rumbleDuration);
             gamepad.PauseHaptics();
         }
     }
