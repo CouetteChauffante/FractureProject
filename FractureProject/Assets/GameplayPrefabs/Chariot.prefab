@@ -66,9 +66,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4837334851ec81648b3d3a5ba23bc805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewPushableHandle
-  lowFrequency: 0
-  highFrequency: 1
-  rumbleDuration: 0.05
+  lowFrequency: 0.1
+  highFrequency: 0.6
+  rumbleDuration: 0.08
 --- !u!1 &4084583410421166712
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,6 +176,9 @@ MonoBehaviour:
   onZ: 1
   spriteRenderer: {fileID: 7682398642958613625}
   spriteWhenPush: {fileID: 21300000, guid: 11664e7442cb87743a3a0024eb4146bf, type: 3}
+  lowFrequency: 0.6
+  highFrequency: 0.35
+  rumbleDuration: 0.1
 --- !u!1 &7127406416743827479
 GameObject:
   m_ObjectHideFlags: 0
