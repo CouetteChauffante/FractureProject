@@ -22410,6 +22410,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1095568482536293725, guid: c275c6e688db01447ab31cceac5dfba9, type: 3}
+      propertyPath: lowFrequency
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1095568482536293725, guid: c275c6e688db01447ab31cceac5dfba9, type: 3}
+      propertyPath: highFrequency
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1095568482536293725, guid: c275c6e688db01447ab31cceac5dfba9, type: 3}
+      propertyPath: rumbleDuration
+      value: 500
+      objectReference: {fileID: 0}
     - target: {fileID: 3956713003513232880, guid: c275c6e688db01447ab31cceac5dfba9, type: 3}
       propertyPath: pushDelay
       value: 0.25

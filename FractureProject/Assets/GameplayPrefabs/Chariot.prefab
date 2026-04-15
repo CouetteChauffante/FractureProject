@@ -66,6 +66,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4837334851ec81648b3d3a5ba23bc805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewPushableHandle
+  lowFrequency: 0
+  highFrequency: 1
+  rumbleDuration: 0.05
 --- !u!1 &4084583410421166712
 GameObject:
   m_ObjectHideFlags: 0
