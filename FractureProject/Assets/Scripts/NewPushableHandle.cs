@@ -7,6 +7,7 @@ public class NewPushableHandle : MonoBehaviour
 {
     private NewPushableObject obj;
 
+    [Header("Controller Vibration Settings")]
     [Range(0f, 1f), Tooltip("Vibration lourde")]
     public float lowFrequency;
     [Range(0f, 1f), Tooltip("Vibration légere")]
