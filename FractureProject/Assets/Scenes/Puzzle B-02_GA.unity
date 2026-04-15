@@ -4234,7 +4234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -6691,7 +6691,7 @@ GameObject:
   - component: {fileID: 679087619}
   - component: {fileID: 679087618}
   m_Layer: 0
-  m_Name: Global Volume
+  m_Name: Global Volume Ursula
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8802,12 +8802,12 @@ GameObject:
   - component: {fileID: 948884940}
   - component: {fileID: 948884939}
   m_Layer: 0
-  m_Name: Global Volume Sepia
+  m_Name: Global Volume Flashback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &948884939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10727,7 +10727,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -215, y: 19.026459}
+  m_AnchoredPosition: {x: -215, y: 19.02649}
   m_SizeDelta: {x: 350.83643, y: 26.624496}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1176247126
@@ -11576,10 +11576,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 425207397}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 429, y: 268}
-  m_SizeDelta: {x: 860, y: 537.5}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 1.8377934, y: -1.2986107}
+  m_SizeDelta: {x: 803.6755, y: 502.2972}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1271076454
 MonoBehaviour:
@@ -12206,6 +12206,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ca216969900408498319e94687d176f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SwitchNodeEvent
+--- !u!1 &1378141790
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1378141792}
+  - component: {fileID: 1378141791}
+  m_Layer: 0
+  m_Name: 'Global Volume LUT '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1378141791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378141790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 4c1f566f4c94a834faf0f3c5b6bfa106, type: 2}
+--- !u!4 &1378141792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378141790}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 75.7428, y: -2.877589, z: -34.403008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1384143880
 GameObject:
   m_ObjectHideFlags: 0
@@ -18595,6 +18644,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 679087619}
   - {fileID: 948884940}
+  - {fileID: 1378141792}
   - {fileID: 425207397}
   - {fileID: 2057456126}
   - {fileID: 1212880627}

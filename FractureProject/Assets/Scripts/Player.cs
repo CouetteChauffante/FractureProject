@@ -52,7 +52,9 @@ public class Player : MonoBehaviour
     private Vector3 ejectionDirection;
     private Vector3 ejectionTargetPosition;
 
-    private Rigidbody rb;
+    public Rigidbody rb;
+
+    public bool locked;
 
     void Update()
     {
@@ -72,6 +74,8 @@ public class Player : MonoBehaviour
         }
         
         //Stoian
+        if (currentState == States.Pushing) return;
+        
         if (h > 0 && v <= 0) //Down Right
         {
             spriteRenderer.flipX = true;
@@ -137,6 +141,7 @@ public class Player : MonoBehaviour
 
     public void Move()
     {
+        if (locked) return;
         skewedDirection = Quaternion.Euler(0, 45, 0) * direction;
 
         rb.linearVelocity = new Vector3(skewedDirection.x * moveSpeed, rb.linearVelocity.y, skewedDirection.z * moveSpeed);
@@ -229,28 +234,6 @@ public class Player : MonoBehaviour
         }
         return Vector3.zero;
     }
-
-    //Stoian
-    public void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("ProtoBarrier"))
-        {
-            Push();
-        }
-    }
-
-    public void Push()
-    {
-        ChangeState(States.Pushing);
-    }
-
-    public void OnCollisionExit(Collision other)
-    {
-        if (other.gameObject.CompareTag("ProtoBarrier"))
-        {
-            ChangeState(States.Walking);
-        }
-    }
-    //Stoian
+    
 }
 
