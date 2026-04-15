@@ -3,8 +3,6 @@ Shader "Custom/CrowdDisplay"
     Properties
     {
         _MainTex ("Sprite Atlas Texture", 2D) = "white" {}
-        _PointA ("Point A", Vector) = (-10, 0, 0, 0)
-        _PointB ("Point B", Vector) = (10, 0, 0, 0)
         _Scale ("Taille (X=Largeur, Y=Hauteur)", Vector) = (1, 1, 0, 0)
         _Width ("Largeur de la foule", Float) = 2.0
         _BounceSpeed ("Bounce Speed", Float) = 5
@@ -33,6 +31,7 @@ Shader "Custom/CrowdDisplay"
             };
 
             StructuredBuffer<CharacterData> _CrowdBuffer;
+            StructuredBuffer<float4> _WaypointBuffer;
 
             struct Attributes
             {
@@ -53,13 +52,13 @@ Shader "Custom/CrowdDisplay"
             SAMPLER(sampler_MainTex);
             
             CBUFFER_START(UnityPerMaterial)
-                float4 _PointA;
-                float4 _PointB;
                 float4 _Scale;
                 float _Width;
                 float _GlobalOffset;
                 float _BounceSpeed;
                 float _BounceAmp;
+                int _WaypointCount;
+                float _TotalPathLength;
             CBUFFER_END
 
             Varyings vert(Attributes input, uint instanceID : SV_InstanceID)
@@ -71,9 +70,32 @@ Shader "Custom/CrowdDisplay"
                 CharacterData data = _CrowdBuffer[instanceID];
 
                 float progress = frac(data.initialProgress + _GlobalOffset);
-                float3 basePos = lerp(_PointA.xyz, _PointB.xyz, progress);
                 
-                float3 dir = normalize(_PointB.xyz - _PointA.xyz);
+                float targetDistance = progress * _TotalPathLength;
+                
+                int segmentIndex = 0;
+                float localProgress = 0.0;
+                
+                for(int i = 0; i < _WaypointCount - 1; i++) 
+                {
+                    float distStart = _WaypointBuffer[i].w;
+                    float distEnd = _WaypointBuffer[i+1].w;
+                    
+                    if(targetDistance >= distStart && targetDistance <= distEnd) 
+                    {
+                        segmentIndex = i;
+                        float segmentLength = distEnd - distStart;
+                        localProgress = (targetDistance - distStart) / max(0.001, segmentLength);
+                        break;
+                    }
+                }
+
+                float3 pointA = _WaypointBuffer[segmentIndex].xyz;
+                float3 pointB = _WaypointBuffer[segmentIndex + 1].xyz;
+
+                float3 basePos = lerp(pointA, pointB, localProgress);
+                
+                float3 dir = normalize(pointB - pointA);
                 float3 up = float3(0, 1, 0);
                 float3 sideDir = normalize(cross(dir, up));
                 
@@ -89,8 +111,7 @@ Shader "Custom/CrowdDisplay"
                 float3 finalWorldPos = worldPos + scaledPositionOS; 
                 output.positionCS = TransformWorldToHClip(finalWorldPos);
 
-                float4 uvRect = data.uvRect;
-                output.uv = input.uv * uvRect.zw + uvRect.xy;
+                output.uv = input.uv * data.uvRect.zw + data.uvRect.xy;
                 
                 output.alpha = smoothstep(0.0, 0.05, progress) * (1.0 - smoothstep(0.95, 1.0, progress));
 
@@ -102,7 +123,9 @@ Shader "Custom/CrowdDisplay"
                 UNITY_SETUP_INSTANCE_ID(input);
                 half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
                 col.a *= input.alpha;
+                
                 clip(col.a - 0.1); 
+                
                 return col;
             }
             ENDHLSL
