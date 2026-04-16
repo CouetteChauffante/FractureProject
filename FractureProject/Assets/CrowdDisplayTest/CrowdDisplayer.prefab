@@ -44,8 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fe1e681db5ff694cb8416c2dceec85e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrowdDisplayer
-  transformA: {fileID: 0}
-  transformB: {fileID: 0}
+  targetCrowd: {fileID: 0}
   atlas: {fileID: 4343727234628468602, guid: f4f69ff8cc723534ea4efe021a245da6, type: 2}
   characters:
   - {fileID: 21300000, guid: 3a059d67177780140b64e4bb913c8df0, type: 3}
@@ -79,7 +78,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 24b01483212e2f04fb16ab8f8fd1f238, type: 3}
   - {fileID: 21300000, guid: 30be2c2f43622654a9c9366d38bab411, type: 3}
   characterMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
-  crowdMaterialTemplate: {fileID: 2100000, guid: 84d5b26d92df0ae49bc65dd5c3a93058, type: 2}
+  crowdMaterialTemplate: {fileID: 2100000, guid: 91df9494f041ac641a4d9cf2a3b65d81, type: 2}
   characterCount: 500
-  isMoving: 0
-  moveSpeed: 0.1
+  moveSpeed: 3

@@ -17,12 +17,17 @@ public class CrowdDisplayer : MonoBehaviour
     public Material crowdMaterialTemplate; 
     
     public int characterCount = 10000;
-    public float moveSpeed = 0.1f;
+    
+    public float baseMoveSpeed = 3f;
+    public float acceleration = 5f;
     
     private ComputeBuffer crowdBuffer;
     private ComputeBuffer argsBuffer;
     private ComputeBuffer waypointBuffer; 
     private Vector4[] waypointPositions;  
+    
+    private float currentSpeed = 0f;
+    private float lastTotalDistance = 0f;
     
     private float globalOffset = 0f;
     private MaterialPropertyBlock propertyBlock;
@@ -78,53 +83,46 @@ public class CrowdDisplayer : MonoBehaviour
     
     void Update()
     {
-        if (propertyBlock == null || crowdMaterialTemplate == null || targetCrowd.rootNode == null) return;
+        if (targetCrowd?.rootNode == null) return;
 
-        currentWaypointCount = 0;
+        int currentCount = 0;
         float accumulatedDistance = 0f;
-        
-        CrowdNode currentNode = targetCrowd.rootNode;
-        Vector3 lastPosition = currentNode.position;
-        
-        while (currentNode != null)
-        {
-            float distanceToThisNode = Vector3.Distance(lastPosition, currentNode.position);
-            accumulatedDistance += distanceToThisNode;
+        CrowdNode current = targetCrowd.rootNode;
+        Vector3 lastPos = current.position;
 
-            waypointPositions[currentWaypointCount] = new Vector4(
-                currentNode.position.x, 
-                currentNode.position.y, 
-                currentNode.position.z, 
-                accumulatedDistance
-            );
-            
-            lastPosition = currentNode.position;
-            currentWaypointCount++;
-
-            if (currentWaypointCount >= waypointPositions.Length) break;
-
-            currentNode = currentNode.nextNode;
+        while (current != null) {
+            float dist = Vector3.Distance(lastPos, current.position);
+            accumulatedDistance += dist;
+            waypointPositions[currentCount] = new Vector4(current.position.x, current.position.y, current.position.z, accumulatedDistance);
+            lastPos = current.position;
+            currentCount++;
+            current = current.nextNode;
         }
 
-        if (currentWaypointCount < 2) return;
+        if (lastTotalDistance > 0 && Mathf.Abs(accumulatedDistance - lastTotalDistance) > 0.01f) {
+            globalOffset *= (accumulatedDistance / lastTotalDistance);
+        }
+        lastTotalDistance = accumulatedDistance;
+
+        if (currentCount < 2) return;
+
+        float targetSpeed = 0f;
+        if (targetCrowd.rootNode.state == CrowdState.Flowing) {
+            targetSpeed = baseMoveSpeed; 
+        }
+
+        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, acceleration * Time.deltaTime);
+        
+        globalOffset += Time.deltaTime * currentSpeed;
 
         waypointBuffer.SetData(waypointPositions);
-        propertyBlock.SetInt("_WaypointCount", currentWaypointCount);
-        
+        propertyBlock.SetInt("_WaypointCount", currentCount);
         propertyBlock.SetFloat("_TotalPathLength", accumulatedDistance);
+        propertyBlock.SetFloat("_GlobalOffset", globalOffset / Mathf.Max(0.001f, accumulatedDistance));
 
-        if (targetCrowd.rootNode.state == CrowdState.Flowing) 
-        {
-            globalOffset += Time.deltaTime * moveSpeed;
-            
-            propertyBlock.SetFloat("_GlobalOffset", globalOffset / accumulatedDistance);
-        }
-        
-        Graphics.DrawMeshInstancedIndirect(
-            characterMesh, 0, crowdMaterialTemplate, 
-            new Bounds(Vector3.zero, Vector3.one * 1000), 
-            argsBuffer, 0, propertyBlock 
-        );
+        if (characters.Length > 0) propertyBlock.SetTexture("_MainTex", characters[0].texture);
+
+        Graphics.DrawMeshInstancedIndirect(characterMesh, 0, crowdMaterialTemplate, new Bounds(Vector3.zero, Vector3.one * 1000), argsBuffer, 0, propertyBlock);
     }
 
     void OnDisable() 

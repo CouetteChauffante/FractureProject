@@ -5941,10 +5941,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1278198180}
     - target: {fileID: 4212833876203847845, guid: f1596f91786fe2c42ab6775391cc8cea, type: 3}
-      propertyPath: moveSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4212833876203847845, guid: f1596f91786fe2c42ab6775391cc8cea, type: 3}
       propertyPath: transformA
       value: 
       objectReference: {fileID: 177141354}
@@ -5957,13 +5953,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 177141355}
     - target: {fileID: 4212833876203847845, guid: f1596f91786fe2c42ab6775391cc8cea, type: 3}
-      propertyPath: characterCount
-      value: 500
+      propertyPath: acceleration
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4212833876203847845, guid: f1596f91786fe2c42ab6775391cc8cea, type: 3}
-      propertyPath: crowdMaterialTemplate
-      value: 
-      objectReference: {fileID: 2100000, guid: 91df9494f041ac641a4d9cf2a3b65d81, type: 2}
     - target: {fileID: 7700269224792031573, guid: f1596f91786fe2c42ab6775391cc8cea, type: 3}
       propertyPath: m_Name
       value: CrowdDisplayer
