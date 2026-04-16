@@ -14142,6 +14142,8 @@ MonoBehaviour:
   crowdSpeed: 50
   ejectionDistance: 5
   ejectionSpeed: 0
+  rb: {fileID: 0}
+  locked: 0
 --- !u!4 &1536739139
 Transform:
   m_ObjectHideFlags: 0
