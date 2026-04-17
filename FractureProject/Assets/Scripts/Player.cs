@@ -97,11 +97,11 @@ public class Player : MonoBehaviour
         }
         else if (h > 0 && v == 0) //Right
         {
-            spriteRenderer.flipX = true;
+            spriteRenderer.flipX = false;
         }
         else if (h < 0 && v == 0) //Left
         {
-            spriteRenderer.flipX = false;
+            spriteRenderer.flipX = true;
         }
         //Stoian
     }
