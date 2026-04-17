@@ -9,35 +9,30 @@ public class CrowdDisplayer : MonoBehaviour
         public Vector4 uvRect;
     }
 
-    public Crowd targetCrowd;
+    public Crowd targetCrowd; 
     
     public SpriteAtlas atlas;
-    public Sprite[] characters;
     public Mesh characterMesh; 
     public Material crowdMaterialTemplate; 
     
-    public int characterCount = 10000;
-    
-    public float baseMoveSpeed = 3f;
-    public float acceleration = 5f;
+    public int characterCount;
+    public float moveSpeed; 
     
     private ComputeBuffer crowdBuffer;
     private ComputeBuffer argsBuffer;
     private ComputeBuffer waypointBuffer; 
-    private Vector4[] waypointPositions;  
-    
-    private float currentSpeed = 0f;
-    private float lastTotalDistance = 0f;
+    private Vector4[] waypointPositions;
     
     private float globalOffset = 0f;
     private MaterialPropertyBlock propertyBlock;
     
+    private Sprite[] characters;
     private int currentWaypointCount = 0;
 
     void Start()
     {
         if (targetCrowd == null) {
-            Debug.LogError("Le CrowdDisplayer a besoin d'une référence à un objet Crowd !");
+            Debug.LogError("Aucune foulee");
             return;
         }
         InitializeCrowd();
@@ -45,6 +40,17 @@ public class CrowdDisplayer : MonoBehaviour
 
     void InitializeCrowd()
     {
+        if (atlas != null)
+        {
+            characters = new Sprite[atlas.spriteCount];
+            atlas.GetSprites(characters);
+        }
+        else if (characters == null || characters.Length == 0)
+        {
+            Debug.LogError("Aucun Atlas");
+            return;
+        }
+        
         propertyBlock = new MaterialPropertyBlock();
 
         CharacterData[] data = new CharacterData[characterCount];
@@ -80,49 +86,61 @@ public class CrowdDisplayer : MonoBehaviour
         uint[] args = new uint[5] { characterMesh.GetIndexCount(0), (uint)characterCount, 0, 0, 0 };
         argsBuffer.SetData(args);
     }
-    
+
     void Update()
     {
-        if (targetCrowd?.rootNode == null) return;
+        if (propertyBlock == null || crowdMaterialTemplate == null || targetCrowd.rootNode == null) return;
 
-        int currentCount = 0;
-        float accumulatedDistance = 0f;
-        CrowdNode current = targetCrowd.rootNode;
-        Vector3 lastPos = current.position;
-
-        while (current != null) {
-            float dist = Vector3.Distance(lastPos, current.position);
-            accumulatedDistance += dist;
-            waypointPositions[currentCount] = new Vector4(current.position.x, current.position.y, current.position.z, accumulatedDistance);
-            lastPos = current.position;
-            currentCount++;
-            current = current.nextNode;
-        }
-
-        if (lastTotalDistance > 0 && Mathf.Abs(accumulatedDistance - lastTotalDistance) > 0.01f) {
-            globalOffset *= (accumulatedDistance / lastTotalDistance);
-        }
-        lastTotalDistance = accumulatedDistance;
-
-        if (currentCount < 2) return;
-
-        float targetSpeed = 0f;
-        if (targetCrowd.rootNode.state == CrowdState.Flowing) {
-            targetSpeed = baseMoveSpeed; 
-        }
-
-        currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, acceleration * Time.deltaTime);
+        currentWaypointCount = 0;
+        float accumulatedDistance = 0f; 
         
-        globalOffset += Time.deltaTime * currentSpeed;
+        CrowdNode currentNode = targetCrowd.rootNode;
+        Vector3 lastPosition = currentNode.position;
+        
+        while (currentNode != null)
+        {
+            float distanceToThisNode = Vector3.Distance(lastPosition, currentNode.position);
+            accumulatedDistance += distanceToThisNode;
+
+            waypointPositions[currentWaypointCount] = new Vector4(
+                currentNode.position.x, 
+                currentNode.position.y, 
+                currentNode.position.z, 
+                accumulatedDistance
+            );
+            
+            lastPosition = currentNode.position;
+            currentWaypointCount++;
+
+            if (currentWaypointCount >= waypointPositions.Length) break;
+
+            currentNode = currentNode.nextNode;
+        }
+
+        if (currentWaypointCount < 2) return;
 
         waypointBuffer.SetData(waypointPositions);
-        propertyBlock.SetInt("_WaypointCount", currentCount);
+        propertyBlock.SetInt("_WaypointCount", currentWaypointCount);
         propertyBlock.SetFloat("_TotalPathLength", accumulatedDistance);
-        propertyBlock.SetFloat("_GlobalOffset", globalOffset / Mathf.Max(0.001f, accumulatedDistance));
 
-        if (characters.Length > 0) propertyBlock.SetTexture("_MainTex", characters[0].texture);
-
-        Graphics.DrawMeshInstancedIndirect(characterMesh, 0, crowdMaterialTemplate, new Bounds(Vector3.zero, Vector3.one * 1000), argsBuffer, 0, propertyBlock);
+        if (targetCrowd.rootNode.state == CrowdState.Flowing) 
+        {
+            globalOffset += Time.deltaTime * moveSpeed;
+            
+            float safeDistance = Mathf.Max(0.001f, accumulatedDistance);
+            
+            propertyBlock.SetFloat("_GlobalOffset", globalOffset / safeDistance);
+        }
+        
+        Graphics.DrawMeshInstancedIndirect(
+            characterMesh, 
+            0, 
+            crowdMaterialTemplate, 
+            new Bounds(Vector3.zero, Vector3.one * 1000), 
+            argsBuffer,
+            0,
+            propertyBlock 
+        );
     }
 
     void OnDisable() 
