@@ -1,9 +1,18 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class NewPushableHandle : MonoBehaviour
 {
     private NewPushableObject obj;
+
+    [Header("Controller Vibration Settings")]
+    [Range(0f, 1f), Tooltip("Vibration lourde")]
+    public float lowFrequency;
+    [Range(0f, 1f), Tooltip("Vibration légere")]
+    public float highFrequency;
+    public float rumbleDuration;
 
     private void Start()
     {
@@ -15,6 +24,7 @@ public class NewPushableHandle : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             obj.isPlayerNear = true;
+            StartCoroutine(Rumble());
         }
     }
 
@@ -23,6 +33,18 @@ public class NewPushableHandle : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             obj.isPlayerNear = false;
+        }
+    }
+
+    private IEnumerator Rumble()
+    {
+        Gamepad gamepad = Gamepad.current;
+
+        if (gamepad != null)
+        {
+            gamepad.SetMotorSpeeds(lowFrequency, highFrequency);
+            yield return new WaitForSeconds(rumbleDuration);
+            gamepad.PauseHaptics();
         }
     }
 }

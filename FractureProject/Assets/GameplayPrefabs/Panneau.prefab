@@ -183,6 +183,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ba118ef1b453e4da72a23b82c6e93c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  lowFrequency: 0.1
+  highFrequency: 0.6
+  rumbleDuration: 0.08
   onInteraction:
     m_PersistentCalls:
       m_Calls:
@@ -193,7 +196,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

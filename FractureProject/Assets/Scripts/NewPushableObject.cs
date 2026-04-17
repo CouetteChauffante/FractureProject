@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody), typeof(BoxCollider))]
 public class NewPushableObject : MonoBehaviour
@@ -66,6 +67,14 @@ public class NewPushableObject : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Sprite spriteWhenPush;
     private Sprite baseSprite;
+    
+    [Space]
+    
+    [Header("Controller Vibration Settings")]
+    [Range(0f, 1f), Tooltip("Vibration lourde")]
+    public float lowFrequency;
+    [Range(0f, 1f), Tooltip("Vibration légere")]
+    public float highFrequency;
 
     private void TryPush(Vector3 direction)
     {
@@ -88,17 +97,30 @@ public class NewPushableObject : MonoBehaviour
         Vector3 targetPos = startPos + (direction * unitsPerPush);
         Vector3 offset = startPos - Player.instance.transform.position;
         
+        Gamepad gamepad = Gamepad.current;
+        
         while (Vector3.Distance(rb.position, targetPos) > 0.01f)
         {
             Vector3 newPos = Vector3.MoveTowards(rb.position, targetPos, pushSpeed * Time.fixedDeltaTime);
             rb.MovePosition(newPos);
             Player.instance.rb.MovePosition(newPos-offset);
+
+            if (gamepad != null)
+            {
+                gamepad.SetMotorSpeeds(lowFrequency, highFrequency);
+            }
+            
             yield return new WaitForFixedUpdate();
         }
-
+        
         rb.MovePosition(targetPos);
         pushTimer = 0f;
         isMoving = false;
+
+        if (gamepad != null)
+        {
+            gamepad.PauseHaptics();
+        }
     }
 
     private Vector3 GetSnappyDirection(Vector3 inputDir)

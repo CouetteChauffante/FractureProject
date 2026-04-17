@@ -12,7 +12,7 @@ public class StopNodeEvent : MonoBehaviour
         this.node = node;
         onStop += crowd.RefreshCrowdStates;
     }
-
+    
     public void SetStop(bool stop)
     {
         if (node != null)
@@ -20,4 +20,7 @@ public class StopNodeEvent : MonoBehaviour
         
         onStop?.Invoke();
     }
+    
+    [ContextMenu("Trigger")]
+    public void TriggerStop() => SetStop(!node.isStopped);
 }
