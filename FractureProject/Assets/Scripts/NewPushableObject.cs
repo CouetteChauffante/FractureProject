@@ -39,8 +39,39 @@ public class NewPushableObject : MonoBehaviour
             if (isMoving) return;
             if (Input.GetKey(KeyCode.Q) || Input.GetButton("Fire1"))
             {
+                
                 Player.instance.locked = true;
                 Player.instance.ChangeState(Player.States.Pushing);
+
+                //"Ce sera le probleme d'Olivier" -Alissa
+                
+                if (Camera.main == null) return;
+                
+                Vector3 camForward = new Vector3(Camera.main.transform.forward.x, 0, Camera.main.transform.forward.z);
+                
+                Vector3 playerDir = (transform.position - Player.instance.transform.position).normalized;
+
+                playerDir = Camera.main.transform.right * playerDir.x + camForward * playerDir.z;
+                playerDir = Quaternion.AngleAxis(-45f, Vector3.up) * playerDir;
+                
+                Player.instance.animatorController.UpdateMoveDirection(playerDir.x, playerDir.z);
+                
+                if (playerDir.x > 0 && playerDir.z <= 0) //Down Right
+                {
+                    Player.instance.spriteRenderer.flipX = true;
+                }
+                else if (playerDir.x < 0 && playerDir.z <= 0) //Down Left
+                {
+                    Player.instance.spriteRenderer.flipX = false;
+                } 
+                else if (playerDir.x < 0 && playerDir.z > 0) //Up Left
+                {
+                    Player.instance.spriteRenderer.flipX = true;
+                } 
+                else if (playerDir.x > 0 && playerDir.z > 0) //Up Right
+                {
+                    Player.instance.spriteRenderer.flipX = false;
+                }
                 
                 Vector3 dir = new Vector3(0f, 0f, 0f);
                 if(onX)dir +=(new Vector3(Input.GetAxis("Horizontal"), 0f, 0f));
