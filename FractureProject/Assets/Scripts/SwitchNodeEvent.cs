@@ -20,4 +20,7 @@ public class SwitchNodeEvent : MonoBehaviour
         
         onSwitch?.Invoke();
     }
+    
+    [ContextMenu("Trigger")]
+    public void TriggerSwitch() => SwitchEvent(1);
 }
