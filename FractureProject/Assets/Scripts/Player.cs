@@ -5,7 +5,7 @@ public class Player : MonoBehaviour
 {
     public static Player instance { get; private set; }
     
-    private AnimatorController animatorController;
+    public AnimatorController animatorController;
     
     //Stoian
     public SpriteRenderer spriteRenderer;
@@ -68,19 +68,22 @@ public class Player : MonoBehaviour
             ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
         }
         
-        if (currentState == States.Walking || /*Stoian*/ currentState == States.Pushing)
+        if (currentState == States.Walking)
         {
             animatorController.UpdateMoveDirection(direction.x, direction.z);
         }
         
         //Stoian
-        if (currentState == States.Pushing) return;
+        if (currentState == States.Pushing)
+        {
+            return;
+        }
         
-        if (h > 0 && v <= 0) //Down Right
+        if (h > 0 && v < 0) //Down Right
         {
             spriteRenderer.flipX = true;
         }
-        else if (h < 0 && v <= 0) //Down Left
+        else if (h < 0 && v < 0) //Down Left
         {
             spriteRenderer.flipX = false;
         } 
@@ -91,6 +94,14 @@ public class Player : MonoBehaviour
         else if (h > 0 && v > 0) //Up Right
         {
             spriteRenderer.flipX = false;
+        }
+        else if (h > 0 && v == 0) //Right
+        {
+            spriteRenderer.flipX = false;
+        }
+        else if (h < 0 && v == 0) //Left
+        {
+            spriteRenderer.flipX = true;
         }
         //Stoian
     }
