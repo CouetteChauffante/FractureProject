@@ -5,7 +5,7 @@ public class Player : MonoBehaviour
 {
     public static Player instance { get; private set; }
     
-    private AnimatorController animatorController;
+    public AnimatorController animatorController;
     
     //Stoian
     public SpriteRenderer spriteRenderer;
@@ -52,7 +52,9 @@ public class Player : MonoBehaviour
     private Vector3 ejectionDirection;
     private Vector3 ejectionTargetPosition;
 
-    private Rigidbody rb;
+    public Rigidbody rb;
+
+    public bool locked;
 
     void Update()
     {
@@ -66,17 +68,22 @@ public class Player : MonoBehaviour
             ChangeState(direction.magnitude > 0.1f ? States.Walking : States.Idle);
         }
         
-        if (currentState == States.Walking || /*Stoian*/ currentState == States.Pushing)
+        if (currentState == States.Walking)
         {
             animatorController.UpdateMoveDirection(direction.x, direction.z);
         }
         
         //Stoian
-        if (h > 0 && v <= 0) //Down Right
+        if (currentState == States.Pushing)
+        {
+            return;
+        }
+        
+        if (h > 0 && v < 0) //Down Right
         {
             spriteRenderer.flipX = true;
         }
-        else if (h < 0 && v <= 0) //Down Left
+        else if (h < 0 && v < 0) //Down Left
         {
             spriteRenderer.flipX = false;
         } 
@@ -87,6 +94,14 @@ public class Player : MonoBehaviour
         else if (h > 0 && v > 0) //Up Right
         {
             spriteRenderer.flipX = false;
+        }
+        else if (h > 0 && v == 0) //Right
+        {
+            spriteRenderer.flipX = false;
+        }
+        else if (h < 0 && v == 0) //Left
+        {
+            spriteRenderer.flipX = true;
         }
         //Stoian
     }
@@ -137,6 +152,7 @@ public class Player : MonoBehaviour
 
     public void Move()
     {
+        if (locked) return;
         skewedDirection = Quaternion.Euler(0, 45, 0) * direction;
 
         rb.linearVelocity = new Vector3(skewedDirection.x * moveSpeed, rb.linearVelocity.y, skewedDirection.z * moveSpeed);
@@ -229,28 +245,6 @@ public class Player : MonoBehaviour
         }
         return Vector3.zero;
     }
-
-    //Stoian
-    public void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("ProtoBarrier"))
-        {
-            Push();
-        }
-    }
-
-    public void Push()
-    {
-        ChangeState(States.Pushing);
-    }
-
-    public void OnCollisionExit(Collision other)
-    {
-        if (other.gameObject.CompareTag("ProtoBarrier"))
-        {
-            ChangeState(States.Walking);
-        }
-    }
-    //Stoian
+    
 }
 
