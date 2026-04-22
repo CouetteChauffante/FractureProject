@@ -391,7 +391,7 @@ GameObject:
   m_Component:
   - component: {fileID: 18794029}
   m_Layer: 0
-  m_Name: ---- CAMERA ----
+  m_Name: ==== CAMERA ====
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6870,7 +6870,7 @@ GameObject:
   m_Component:
   - component: {fileID: 665805338}
   m_Layer: 0
-  m_Name: ---- TEMPORARY ----
+  m_Name: ==== TEMPORARY ====
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12089,7 +12089,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1329296988}
   m_Layer: 0
-  m_Name: ---- LEVEL ----
+  m_Name: ==== LEVEL ====
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12736,7 +12736,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1390231392}
   m_Layer: 0
-  m_Name: ---- PLAYER ----
+  m_Name: ==== PLAYER ====
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14623,7 +14623,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1556090973}
   m_Layer: 0
-  m_Name: ---- TRIGGERS ----
+  m_Name: ==== TRIGGERS ====
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16721,7 +16721,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1911828380}
   m_Layer: 0
-  m_Name: ---- NODES ----
+  m_Name: ==== NODES ====
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
